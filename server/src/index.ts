@@ -8,7 +8,7 @@ const app = new Elysia()
             ws.send("test");
         },
     })
-    .listen(3000);
+    .listen(Bun.env.PORT || 4000);
 
 console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
