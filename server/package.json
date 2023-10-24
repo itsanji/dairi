@@ -1,15 +1,27 @@
 {
-    "name": "hi-elysia",
-    "version": "1.0.50",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "bun run --watch src/index.ts"
-    },
-    "dependencies": {
-        "elysia": "latest"
-    },
-    "devDependencies": {
-        "bun-types": "latest"
-    },
-    "module": "src/index.js"
+  "name": "hi-elysia",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts",
+    "start": "ts-node src/index.ts",
+    "typeorm": "typeorm-ts-node-commonjs"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^0.7.1",
+    "@elysiajs/swagger": "^0.7.3",
+    "@grotto/logysia": "^0.0.5",
+    "elysia": "latest",
+    "mysql2": "^3.6.2",
+    "pg": "^8.4.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "0.3.17"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.10",
+    "bun-types": "latest",
+    "ts-node": "10.7.0",
+    "typescript": "4.5.2"
+  },
+  "module": "src/index.js"
 }
