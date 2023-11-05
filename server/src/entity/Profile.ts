@@ -4,24 +4,17 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     Column,
-    OneToOne,
-    JoinColumn,
 } from "typeorm";
-import { Profile } from "./Profile";
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-
-    @Column({ unique: true })
-    username: string;
+export class Profile {
+    @PrimaryGeneratedColumn("increment")
+    id: number;
 
     @Column()
-    password: string;
+    firstname: string;
 
-    @OneToOne(() => Profile, { eager: true })
-    @JoinColumn()
-    profile: Profile;
+    @Column()
+    lastname: string;
 
     @CreateDateColumn({
         type: "timestamp",

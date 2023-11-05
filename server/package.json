@@ -8,7 +8,9 @@
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {
+    "@elysiajs/cookie": "^0.7.0",
     "@elysiajs/cors": "^0.7.1",
+    "@elysiajs/jwt": "^0.7.0",
     "@elysiajs/swagger": "^0.7.3",
     "@grotto/logysia": "^0.0.5",
     "elysia": "latest",
