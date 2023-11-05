@@ -1,16 +1,19 @@
 import { Elysia, t } from "elysia";
-import { userController } from "./controllers/user.controller";
 import cors from "@elysiajs/cors";
 import { logger } from "@grotto/logysia";
 import "reflect-metadata";
 import swagger from "@elysiajs/swagger";
+import { authController } from "./controllers/auth.controller";
+import { userController } from "./controllers/user.controller";
 
 async function server() {
     const app = new Elysia()
         .use(logger())
         .use(swagger())
         .use(cors())
+        .use(authController)
         .use(userController)
+
         .ws("/ws", {
             body: t.Object({
                 type: t.String(),
