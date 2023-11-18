@@ -28,6 +28,7 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 **/*.trace
 **/*.zip
@@ -35,4 +36,5 @@ dist-ssr
 **/*.tgz
 **/*.log
 package-lock.json
+bun.lockb
 **/*.bun
