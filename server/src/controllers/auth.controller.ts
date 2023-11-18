@@ -85,7 +85,7 @@ export const authController = new Elysia({
     )
     .post(
         "login",
-        async ({ body, db, setCookie, jwt }) => {
+        async ({ body, db, cookie, setCookie, jwt }) => {
             const { username, password } = body;
 
             // If User exist
@@ -108,18 +108,22 @@ export const authController = new Elysia({
                     error: ErrorMessage.wrongPassword
                 };
             }
+            const accessToken = await jwt.sign({
+                userId: user.id
+            });
 
             // Setting cookie
-            setCookie(
-                "auth",
-                await jwt.sign({
-                    userId: user.id
-                }),
-                {
-                    httpOnly: true,
-                    maxAge: 7 * 86400
-                }
-            );
+            setCookie("auth", accessToken, {
+                httpOnly: true,
+                maxAge: 7 * 86400
+            });
+
+            console.log(cookie);
+
+            return {
+                success: true,
+                data: {}
+            };
         },
         {
             body: t.Object({

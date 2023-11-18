@@ -3,11 +3,22 @@ import "./App.css";
 import { toast } from "react-toastify";
 import TodoApp from "./components/TodoApp";
 import { GlobalContext } from "./contexts/globalContext";
+import { edenTreaty } from "@elysiajs/eden";
+import type { App } from "../../server/src/";
 
-const _socket = new WebSocket(`ws://${import.meta.env.BASE_URL}/ws`);
+const _socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
+
+const client = edenTreaty<App>(`http://${import.meta.env.VITE_APP_BE_URL}`);
 
 function App() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
+
+    useEffect(() => {
+        console.log(import.meta.env);
+        client.health.get().then((data) => {
+            console.log(data.data);
+        });
+    }, []);
 
     useEffect(() => {
         _socket.addEventListener("error", (err) => {
