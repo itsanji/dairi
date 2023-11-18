@@ -7,8 +7,18 @@ interface TodoProps {
 
 const TodoApp: React.FC<TodoProps> = () => {
     const [todos, setTodos] = useState<ITodo[]>([
-        { id: 1, addedAt: new Date().toISOString(), isDone: true, name: "test" },
-        { id: 2, addedAt: new Date().toISOString(), isDone: true, name: "test 2" },
+        {
+            id: 1,
+            addedAt: new Date().toISOString(),
+            isDone: true,
+            name: "test"
+        },
+        {
+            id: 2,
+            addedAt: new Date().toISOString(),
+            isDone: true,
+            name: "test 2"
+        }
     ]);
     const { toggleTodo } = useTodo(setTodos);
     return (

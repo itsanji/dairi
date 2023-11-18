@@ -11,27 +11,25 @@ async function server() {
         .use(logger())
         .use(swagger())
         .use(cors())
+        .get("/", () => ({ message: "application feeling good" }))
         .use(authController)
         .use(userController)
-
         .ws("/ws", {
             body: t.Object({
                 type: t.String(),
-                data: t.Any(),
+                data: t.Any()
             }),
             message: (ws, message) => {
                 console.log(message);
                 ws.send({
                     data: {
-                        success: "test",
-                    },
+                        success: "test"
+                    }
                 });
-            },
+            }
         })
         .listen(Bun.env.PORT || 4000);
-    console.log(
-        `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-    );
+    console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);
 }
 
 try {

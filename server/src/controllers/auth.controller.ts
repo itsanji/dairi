@@ -2,20 +2,21 @@ import Elysia, { t } from "elysia";
 import { dbClient } from "../utils/dbPlugin";
 import jwt from "@elysiajs/jwt";
 import cookie from "@elysiajs/cookie";
+import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import { ErrorMessage, MessageList } from "../utils/messages";
 import { Profile } from "../entity/Profile";
 
 export const authController = new Elysia({
     name: "auth",
-    prefix: "auth",
+    prefix: "auth"
 })
     .use(dbClient)
     .use(cookie())
     .use(
         jwt({
             name: "jwt",
-            secret: "some super secret",
+            secret: "some super secret"
         })
     )
     .post(
@@ -24,18 +25,18 @@ export const authController = new Elysia({
             if (body.password !== body.rePassword) {
                 return {
                     success: false,
-                    error: ErrorMessage.retypePwd,
+                    error: ErrorMessage.retypePwd
                 };
             }
             // check if user existed
             const isExisted = await db.manager.getRepository(User).findOne({
-                where: { username: body.username },
+                where: { username: body.username }
             });
 
             if (isExisted) {
                 return {
                     success: false,
-                    error: ErrorMessage.userExisted,
+                    error: ErrorMessage.userExisted
                 };
             }
 
@@ -48,15 +49,19 @@ export const authController = new Elysia({
 
                 const newUser = new User();
                 newUser.username = body.username;
-                newUser.password = body.password;
+
+                // Encrypting password
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(body.password, salt);
+                newUser.password = hashedPassword;
                 newUser.profile = userProfile;
                 await db.manager.getRepository(User).save(newUser);
 
                 return {
                     success: true,
                     data: {
-                        message: MessageList.userCreated,
-                    },
+                        message: MessageList.userCreated
+                    }
                 };
             } catch (e) {
                 // log to file later
@@ -64,7 +69,7 @@ export const authController = new Elysia({
                 // return sys error
                 return {
                     success: false,
-                    error: ErrorMessage.systemError,
+                    error: ErrorMessage.systemError
                 };
             }
         },
@@ -74,10 +79,54 @@ export const authController = new Elysia({
                 password: t.String(),
                 rePassword: t.String(),
                 firstname: t.String(),
-                lastname: t.String(),
-            }),
+                lastname: t.String()
+            })
         }
     )
-    .post("login", async () => {})
+    .post(
+        "login",
+        async ({ body, db, setCookie, jwt }) => {
+            const { username, password } = body;
+
+            // If User exist
+            const user = await db.manager.getRepository(User).findOne({
+                where: [{ username: username }, { email: username }]
+            });
+            if (!user) {
+                return {
+                    success: false,
+                    error: ErrorMessage.userNotExisted
+                };
+            }
+
+            // Comparing password
+            const isSamePwd = bcrypt.compare(password, user.password);
+
+            if (!isSamePwd) {
+                return {
+                    success: false,
+                    error: ErrorMessage.wrongPassword
+                };
+            }
+
+            // Setting cookie
+            setCookie(
+                "auth",
+                await jwt.sign({
+                    userId: user.id
+                }),
+                {
+                    httpOnly: true,
+                    maxAge: 7 * 86400
+                }
+            );
+        },
+        {
+            body: t.Object({
+                username: t.String(),
+                password: t.String()
+            })
+        }
+    )
     .post("verify", async () => {})
     .post("refresh", async () => {});

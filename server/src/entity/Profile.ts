@@ -1,10 +1,4 @@
-import {
-    Entity,
-    CreateDateColumn,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-    Column,
-} from "typeorm";
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from "typeorm";
 @Entity()
 export class Profile {
     @PrimaryGeneratedColumn("increment")
@@ -18,14 +12,14 @@ export class Profile {
 
     @CreateDateColumn({
         type: "timestamp",
-        default: () => "CURRENT_TIMESTAMP(6)",
+        default: () => "CURRENT_TIMESTAMP(6)"
     })
     createdAt: Date;
 
     @UpdateDateColumn({
         type: "timestamp",
         default: () => "CURRENT_TIMESTAMP(6)",
-        onUpdate: "CURRENT_TIMESTAMP(6)",
+        onUpdate: "CURRENT_TIMESTAMP(6)"
     })
     updatedAt: Date;
 }

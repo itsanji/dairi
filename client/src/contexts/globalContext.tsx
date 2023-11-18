@@ -5,7 +5,7 @@ interface IGlobalContext {
 }
 
 const GlobalContext = React.createContext<IGlobalContext>({
-    socket: null,
+    socket: null
 });
 
 export { GlobalContext };

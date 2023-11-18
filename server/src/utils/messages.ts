@@ -1,9 +1,11 @@
 export enum ErrorMessage {
     userExisted = "User existed",
+    userNotExisted = "User Not existed",
     retypePwd = "Retype Password",
-    systemError = "System Error",
+    wrongPassword = "Wrong Password",
+    systemError = "System Error"
 }
 
 export enum MessageList {
-    userCreated = "Registered successfully",
+    userCreated = "Registered successfully"
 }

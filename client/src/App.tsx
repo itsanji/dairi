@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import TodoApp from "./components/TodoApp";
 import { GlobalContext } from "./contexts/globalContext";
 
-const _socket = new WebSocket("ws://localhost:4000/ws");
+const _socket = new WebSocket(`ws://${import.meta.env.BASE_URL}/ws`);
 
 function App() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -32,8 +32,8 @@ function App() {
             JSON.stringify({
                 type: "test",
                 data: {
-                    test: "ok",
-                },
+                    test: "ok"
+                }
             })
         );
     };
