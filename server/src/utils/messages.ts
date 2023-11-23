@@ -3,6 +3,7 @@ export enum ErrorMessage {
     userNotExisted = "User Not existed",
     retypePwd = "Retype Password",
     wrongPassword = "Wrong Password",
+    noAuthProvided = "No Authentication Infomation Provided",
     systemError = "System Error"
 }
 

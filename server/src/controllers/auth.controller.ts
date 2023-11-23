@@ -1,7 +1,5 @@
 import Elysia, { t } from "elysia";
-import { dbClient } from "../utils/dbPlugin";
-import jwt from "@elysiajs/jwt";
-import cookie from "@elysiajs/cookie";
+import { plugins } from "../utils/plugins";
 import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import { ErrorMessage, MessageList } from "../utils/messages";
@@ -11,14 +9,7 @@ export const authController = new Elysia({
     name: "auth",
     prefix: "auth"
 })
-    .use(dbClient)
-    .use(cookie())
-    .use(
-        jwt({
-            name: "jwt",
-            secret: "some super secret"
-        })
-    )
+    .use(plugins)
     .post(
         "register",
         async ({ body, db }) => {
@@ -54,7 +45,9 @@ export const authController = new Elysia({
                 const salt = await bcrypt.genSalt(10);
                 const hashedPassword = await bcrypt.hash(body.password, salt);
                 newUser.password = hashedPassword;
+                newUser.email = body.email;
                 newUser.profile = userProfile;
+
                 await db.manager.getRepository(User).save(newUser);
 
                 return {
@@ -76,6 +69,7 @@ export const authController = new Elysia({
         {
             body: t.Object({
                 username: t.String(),
+                email: t.String(),
                 password: t.String(),
                 rePassword: t.String(),
                 firstname: t.String(),
@@ -85,7 +79,7 @@ export const authController = new Elysia({
     )
     .post(
         "login",
-        async ({ body, db, cookie, setCookie, jwt }) => {
+        async ({ body, db, jwt }) => {
             const { username, password } = body;
 
             // If User exist
@@ -112,17 +106,11 @@ export const authController = new Elysia({
                 userId: user.id
             });
 
-            // Setting cookie
-            setCookie("auth", accessToken, {
-                httpOnly: true,
-                maxAge: 7 * 86400
-            });
-
-            console.log(cookie);
-
             return {
                 success: true,
-                data: {}
+                data: {
+                    accessToken
+                }
             };
         },
         {
