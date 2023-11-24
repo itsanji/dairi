@@ -5,6 +5,12 @@ import TodoApp from "./components/TodoApp";
 import { GlobalContext } from "./contexts/globalContext";
 import type { App } from "../../server/src/";
 import { api } from "./utils/api";
+import { Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Layout from "./pages/Layout";
+import Apps from "./pages/Apps";
+import Auth from "./pages/Auth";
+import NoMatch from "./pages/NoMatch";
 
 const _socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
 
@@ -106,36 +112,14 @@ function App() {
 
     return (
         <GlobalContext.Provider value={{ socket, fetch: globalContext.fetch }}>
-            {/* <TodoApp /> */}
-            <form onSubmit={registerHandle}>
-                <h4>register</h4>
-                {/* <div>
-                    <input ref={usernameRef} type="text" placeholder="username" />
-                </div>
-                <div>
-                    <input ref={emailRef} type="text" placeholder="email" />
-                </div>
-                <div>
-                    <input ref={passwordRef} type="text" placeholder="password" />
-                </div>
-                <div>
-                    <input ref={rePwdRef} type="text" placeholder="re-password" />
-                </div> */}
-                <div>
-                    <input type="text" ref={numRef} />
-                </div>
-                <button type="submit">Submit</button>
-            </form>
-            <form onSubmit={loginHandler}>
-                <h4>Login</h4>
-                <div>
-                    <input type="text" ref={num2Ref} />
-                </div>
-                <button type="submit">Submit</button>
-            </form>
-            <div>
-                <button onClick={getProfile}>Get Profile</button>
-            </div>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/apps" element={<Apps />} />
+                    <Route path="/*" element={<NoMatch />} />
+                </Route>
+            </Routes>
         </GlobalContext.Provider>
     );
 }
