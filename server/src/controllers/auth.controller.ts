@@ -4,6 +4,8 @@ import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import { ErrorMessage, MessageList } from "../utils/messages";
 import { Profile } from "../entity/Profile";
+import jwt from "jsonwebtoken";
+import { constants } from "../utils/constants";
 
 export const authController = new Elysia({
     name: "auth",
@@ -79,7 +81,7 @@ export const authController = new Elysia({
     )
     .post(
         "login",
-        async ({ body, db, jwt }) => {
+        async ({ body, db }) => {
             const { username, password } = body;
 
             // If User exist
@@ -102,14 +104,19 @@ export const authController = new Elysia({
                     error: ErrorMessage.wrongPassword
                 };
             }
-            const accessToken = await jwt.sign({
-                userId: user.id
+            const accessToken = jwt.sign({ userId: user.id }, constants.jwtSecret, {
+                expiresIn: constants.jwtAccessExpire
+            });
+
+            const refreshToken = jwt.sign({ userId: user.id }, constants.jwtSecret, {
+                expiresIn: constants.jwtRefreshExpire
             });
 
             return {
                 success: true,
                 data: {
-                    accessToken
+                    accessToken,
+                    refreshToken
                 }
             };
         },

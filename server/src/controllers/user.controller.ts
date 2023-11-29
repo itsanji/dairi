@@ -2,7 +2,8 @@ import Elysia from "elysia";
 import { User } from "../entity/User";
 import { plugins } from "../utils/plugins";
 import { ErrorMessage } from "../utils/messages";
-import { Profile } from "../entity/Profile";
+import { jwtVerify } from "../utils/jwtUtils";
+import { constants } from "../utils/constants";
 
 export const userController = new Elysia({ prefix: "/user" })
     .use(plugins)
@@ -11,7 +12,7 @@ export const userController = new Elysia({ prefix: "/user" })
         return users;
     })
 
-    .get("/profile", async ({ jwt, headers, db }) => {
+    .get("/profile", async ({ headers, db }) => {
         // Check if header have bearer token
         // console.log(headers);
         const authHeader = headers["authorization"];
@@ -24,7 +25,7 @@ export const userController = new Elysia({ prefix: "/user" })
 
         const token = authHeader.split(" ")[1];
         console.log(token);
-        const info = await jwt.verify(token);
+        const info = jwtVerify<AccessToken>(token, constants.jwtSecret);
         if (!info) {
             return {
                 success: false,
