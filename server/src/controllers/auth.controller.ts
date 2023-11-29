@@ -6,6 +6,7 @@ import { ErrorMessage, MessageList } from "../utils/messages";
 import { Profile } from "../entity/Profile";
 import jwt from "jsonwebtoken";
 import { constants } from "../utils/constants";
+import { jwtVerify } from "../utils/jwtUtils";
 
 export const authController = new Elysia({
     name: "auth",
@@ -104,11 +105,11 @@ export const authController = new Elysia({
                     error: ErrorMessage.wrongPassword
                 };
             }
-            const accessToken = jwt.sign({ userId: user.id }, constants.jwtSecret, {
+            const accessToken = jwt.sign({ userId: user.id } as AccessToken, constants.jwtSecret, {
                 expiresIn: constants.jwtAccessExpire
             });
 
-            const refreshToken = jwt.sign({ userId: user.id }, constants.jwtSecret, {
+            const refreshToken = jwt.sign({ id: user.id } as RefreshToken, constants.jwtSecret, {
                 expiresIn: constants.jwtRefreshExpire
             });
 
@@ -127,5 +128,89 @@ export const authController = new Elysia({
             })
         }
     )
-    .post("verify", async () => {})
-    .post("refresh", async () => {});
+    .get("verify", async ({ headers, db }) => {
+        // Check if header have bearer token
+        // console.log(headers);
+        const authHeader = headers["authorization"];
+        if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
+            return {
+                success: false,
+                error: ErrorMessage.noAuthProvided
+            };
+        }
+
+        const token = authHeader.split(" ")[1];
+        const info = jwtVerify<AccessToken>(token, constants.jwtSecret);
+        if (!info) {
+            return {
+                success: false,
+                error: ErrorMessage.tokenInvalid
+            };
+        }
+
+        // Check if user really existed
+        const userProfile = await db.manager.getRepository(User).findOne({
+            where: { id: info.userId }
+        });
+
+        if (!userProfile) {
+            return {
+                success: false,
+                error: ErrorMessage.tokenInvalid
+            };
+        }
+
+        const newAccessToken = jwt.sign({ userId: userProfile.id }, constants.jwtSecret, {
+            expiresIn: constants.jwtAccessExpire
+        });
+
+        return {
+            success: true,
+            data: { accessToken: newAccessToken }
+        };
+    })
+    .get("refresh", async ({ headers, db }) => {
+        // Check if header have bearer token
+        // console.log(headers);
+        const authHeader = headers["authorization"];
+        if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
+            return {
+                success: false,
+                error: ErrorMessage.noAuthProvided
+            };
+        }
+
+        const token = authHeader.split(" ")[1];
+        const info = jwtVerify<RefreshToken>(token, constants.jwtSecret);
+        if (!info) {
+            return {
+                success: false,
+                error: ErrorMessage.tokenInvalid
+            };
+        }
+
+        // Check if user really existed
+        const userProfile = await db.manager.getRepository(User).findOne({
+            where: { id: info.id }
+        });
+
+        if (!userProfile) {
+            return {
+                success: false,
+                error: ErrorMessage.tokenInvalid
+            };
+        }
+
+        const newAccessToken = jwt.sign({ userId: userProfile.id }, constants.jwtSecret, {
+            expiresIn: constants.jwtAccessExpire
+        });
+
+        const newRefreshToken = jwt.sign({ id: userProfile.id }, constants.jwtSecret, {
+            expiresIn: constants.jwtRefreshExpire
+        });
+
+        return {
+            success: true,
+            data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
+        };
+    });

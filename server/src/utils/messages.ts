@@ -4,7 +4,8 @@ export enum ErrorMessage {
     retypePwd = "Retype Password",
     wrongPassword = "Wrong Password",
     noAuthProvided = "No Authentication Infomation Provided",
-    systemError = "System Error"
+    systemError = "System Error",
+    tokenInvalid = "Token Invalid"
 }
 
 export enum MessageList {
