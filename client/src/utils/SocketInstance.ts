@@ -11,7 +11,7 @@ class SocketInstance {
         this.socket.send(
             JSON.stringify({
                 type,
-                data,
+                data
             })
         );
     }
