@@ -164,9 +164,13 @@ export const authController = new Elysia({
             expiresIn: constants.jwtAccessExpire
         });
 
+        const newRefreshToken = jwt.sign({ id: userProfile.id }, constants.jwtSecret, {
+            expiresIn: constants.jwtRefreshExpire
+        });
+
         return {
             success: true,
-            data: { accessToken: newAccessToken }
+            data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
         };
     })
     .get("refresh", async ({ headers, db }) => {
