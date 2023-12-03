@@ -5,7 +5,9 @@ const Layout: React.FC = () => {
     return (
         <>
             <div>Layout</div>
-            <Outlet />
+            <div style={{ padding: "10px" }}>
+                <Outlet />
+            </div>
         </>
     );
 };

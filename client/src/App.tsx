@@ -1,28 +1,24 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./App.css";
-import { toast } from "react-toastify";
-import TodoApp from "./components/TodoApp";
 import { GlobalContext } from "./contexts/globalContext";
 import type { App } from "../../server/src/";
-import { api } from "./utils/api";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Layout from "./pages/Layout";
 import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";
+import { api, constants } from "./utils/constants";
+import { redirectOrigin, afterAuth } from "./utils/afterAuth";
 
 const _socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
 
 function App() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const globalContext = useContext(GlobalContext);
-    // const usernameRef = useRef<HTMLInputElement>(null);
-    // const emailRef = useRef<HTMLInputElement>(null);
-    // const passwordRef = useRef<HTMLInputElement>(null);
-    // const rePwdRef = useRef<HTMLInputElement>(null);
-    const numRef = useRef<HTMLInputElement>(null);
-    const num2Ref = useRef<HTMLInputElement>(null);
+    const [checked, setChecked] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         _socket.addEventListener("error", (err) => {
@@ -42,6 +38,58 @@ function App() {
         });
     }, []);
 
+    useEffect(() => {
+        window.localStorage.setItem(constants.redirectOriginKey, location.pathname + location.search);
+
+        const verifing = async () => {
+            console.log("1");
+            // verifing token
+            const accessToken = window.localStorage.getItem(constants.accessTokenKey);
+            // if (!accessToken) {
+            //     navigate("/auth?state=login");
+            //     return;
+            // }
+
+            const { data } = await globalContext.fetch.get(api().auth.verify, {
+                headers: {
+                    Authorization: "Bearer " + accessToken
+                }
+            });
+
+            // verify complete, check if redirect origin
+            if (data.success) {
+                afterAuth(data, globalContext);
+                redirectOrigin(navigate);
+                return;
+            }
+
+            // checking w refresh token
+            const refreshToken = window.localStorage.getItem(constants.refreshTokenKey);
+            if (!refreshToken) {
+                navigate("/auth?state=login");
+            }
+
+            const { data: checkRefresh } = await globalContext.fetch.get(api().auth.refresh, {
+                headers: {
+                    Authorization: "Bearer " + refreshToken
+                }
+            });
+
+            if (checkRefresh.success) {
+                afterAuth(checkRefresh, globalContext);
+                redirectOrigin(navigate);
+                return;
+            }
+
+            navigate("/auth?state=login");
+        };
+
+        if (globalContext && !checked) {
+            verifing();
+            setChecked(true);
+        }
+    }, [globalContext]);
+
     // const sendSocketMessage = () => {
     //     _socket.send(
     //         JSON.stringify({
@@ -53,61 +101,8 @@ function App() {
     //     );
     // };
 
-    const registerHandle = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const input = numRef.current;
-        if (!input) {
-            return console.log("no ref");
-        }
-
-        const id = numRef.current.value || 1;
-
-        const data = await globalContext.fetch.post(api().auth.register, {
-            username: `usernam${id}`,
-            email: `email${id}`,
-            password: `password${id}`,
-            rePassword: `password${id}`,
-            firstname: `Test${id}`,
-            lastname: `Last${id}`
-        });
-
-        console.log(data.data);
-    };
-
-    const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const input = num2Ref.current;
-        if (!input) {
-            return console.log("no ref");
-        }
-
-        const id = num2Ref.current.value || 1;
-
-        const data = await globalContext.fetch.post(api().auth.login, {
-            username: `usernam${id}`,
-            password: `password${id}`
-        });
-
-        console.log(data);
-
-        // setting accessToken to localStorage
-        if (data.data.data.accessToken) {
-            window.localStorage.setItem("accessToken", data.data.data.accessToken);
-        }
-    };
-
     const getProfile = () => {
-        // accessToken
-        const accessToken = window.localStorage.getItem("accessToken");
-        if (!accessToken) {
-            return console.log("No accessToken, should login again");
-        }
-
-        globalContext.fetch.get(api().user.profile, {
-            headers: {
-                Authorization: "Bearer " + accessToken
-            }
-        });
+        globalContext.fetch.get(api().user.profile, {});
     };
 
     return (
@@ -120,6 +115,7 @@ function App() {
                     <Route path="/*" element={<NoMatch />} />
                 </Route>
             </Routes>
+            <button onClick={getProfile}>Get Profile</button>
         </GlobalContext.Provider>
     );
 }

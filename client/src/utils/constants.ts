@@ -10,7 +10,9 @@ const api = () => {
     // Endpoit Define
     const authGroup = {
         register: auth + "/register",
-        login: auth + "/login"
+        login: auth + "/login",
+        verify: auth + "/verify",
+        refresh: auth + "/refresh"
     };
 
     const userGroup = {
@@ -23,4 +25,10 @@ const api = () => {
     };
 };
 
-export { api };
+const constants = {
+    accessTokenKey: "access",
+    refreshTokenKey: "refresh",
+    redirectOriginKey: "redirect-origin"
+};
+
+export { api, constants };

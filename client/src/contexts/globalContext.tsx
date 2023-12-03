@@ -15,4 +15,4 @@ const GlobalContext = React.createContext<IGlobalContext>({
     fetch
 });
 
-export { GlobalContext };
+export { GlobalContext, type IGlobalContext };
