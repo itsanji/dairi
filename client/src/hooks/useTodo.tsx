@@ -8,8 +8,8 @@ export const useTodo = (setTodo: React.Dispatch<React.SetStateAction<ITodo[]>>) 
                 id: prev.length + 1,
                 name,
                 addedAt: new Date().toISOString(),
-                isDone: false,
-            },
+                isDone: false
+            }
         ]);
     };
 
@@ -23,7 +23,7 @@ export const useTodo = (setTodo: React.Dispatch<React.SetStateAction<ITodo[]>>) 
                 if (todo.id == toggleId) {
                     return {
                         ...todo,
-                        isDone: !todo.isDone,
+                        isDone: !todo.isDone
                     };
                 }
                 return todo;
@@ -34,6 +34,6 @@ export const useTodo = (setTodo: React.Dispatch<React.SetStateAction<ITodo[]>>) 
     return {
         addTodo,
         removeTodo,
-        toggleTodo,
+        toggleTodo
     };
 };

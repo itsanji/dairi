@@ -1,16 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { Profile } from "./Profile";
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
+    @Column({ unique: true })
+    username: string;
+
+    @Column({ unique: true })
+    email: string;
 
     @Column()
-    firstName: string;
+    password: string;
 
-    @Column()
-    lastName: string;
+    @OneToOne(() => Profile, { eager: true })
+    @JoinColumn()
+    profile: Profile;
 
-    @Column()
-    age: number;
+    @CreateDateColumn({
+        type: "timestamp",
+        default: () => "CURRENT_TIMESTAMP(6)"
+    })
+    createdAt: Date;
+
+    @UpdateDateColumn({
+        type: "timestamp",
+        default: () => "CURRENT_TIMESTAMP(6)",
+        onUpdate: "CURRENT_TIMESTAMP(6)"
+    })
+    updatedAt: Date;
 }
