@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Login from "../components/Login";
+import Register from "../components/Register";
 
 const Auth: React.FC = () => {
     const [searchParam, setSearchParam] = useSearchParams();
@@ -35,7 +36,9 @@ const Auth: React.FC = () => {
                 Register
             </button>
             {pageState === "register" ? (
-                <div>Register</div>
+                <div>
+                    <Register />
+                </div>
             ) : (
                 <div>
                     <Login />

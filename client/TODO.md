@@ -1,0 +1,3 @@
+-   [ ] show auth error message ( from server )
+-   [ ] handle socket events
+-   [ ] styles
