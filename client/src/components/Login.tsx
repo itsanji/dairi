@@ -22,7 +22,9 @@ const Login: React.FC = () => {
             .then(({ data }) => {
                 console.log(data);
                 if (data.success) {
+                    toast("logged in");
                     afterAuth(data, globalContext);
+                    globalContext.updateLogState(true);
                     redirectOrigin(navigate);
                 }
             })

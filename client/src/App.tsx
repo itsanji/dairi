@@ -11,44 +11,53 @@ import NoMatch from "./pages/NoMatch";
 import { api, constants } from "./utils/constants";
 import { redirectOrigin, afterAuth } from "./utils/afterAuth";
 
-const _socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
-
 function App() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const globalContext = useContext(GlobalContext);
     const [checked, setChecked] = useState(false);
+    const [isLogged, setIsLogged] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Open Socket when logged in
     useEffect(() => {
-        _socket.addEventListener("error", (err) => {
-            console.log({ err });
-        });
+        if (isLogged) {
+            let socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
 
-        _socket.onopen = () => {
-            console.log("socket opened");
-            setSocket(_socket);
-        };
-        _socket.onmessage = (ev) => {
-            console.log("socket message: ", { data: JSON.parse(ev.data as string) });
-        };
+            socket.addEventListener("error", (err) => {
+                console.log({ err });
+            });
+            socket.onopen = () => {
+                console.log("socket opened");
+                setSocket(socket);
+            };
+            socket.onmessage = (ev) => {
+                console.log("socket message: ", { data: JSON.parse(ev.data as string) });
+            };
 
-        _socket.addEventListener("close", () => {
-            console.log("Closed");
-        });
-    }, []);
+            socket.addEventListener("close", () => {
+                console.log("Closed");
+            });
+        }
+    }, [isLogged]);
 
     useEffect(() => {
-        window.localStorage.setItem(constants.redirectOriginKey, location.pathname + location.search);
+        const currentURL = location.pathname + location.search;
+        window.localStorage.setItem(constants.redirectOriginKey, currentURL);
 
         const verifing = async () => {
-            console.log("1");
             // verifing token
             const accessToken = window.localStorage.getItem(constants.accessTokenKey);
-            // if (!accessToken) {
-            //     navigate("/auth?state=login");
-            //     return;
-            // }
+            const refreshToken = window.localStorage.getItem(constants.refreshTokenKey);
+
+            if (!accessToken || !refreshToken) {
+                if (location.pathname === "/auth") {
+                    navigate(currentURL);
+                } else {
+                    navigate("/auth?state=login");
+                }
+                return;
+            }
 
             const { data } = await globalContext.fetch.get(api().auth.verify, {
                 headers: {
@@ -64,11 +73,6 @@ function App() {
             }
 
             // checking w refresh token
-            const refreshToken = window.localStorage.getItem(constants.refreshTokenKey);
-            if (!refreshToken) {
-                navigate("/auth?state=login");
-            }
-
             const { data: checkRefresh } = await globalContext.fetch.get(api().auth.refresh, {
                 headers: {
                     Authorization: "Bearer " + refreshToken
@@ -80,8 +84,11 @@ function App() {
                 redirectOrigin(navigate);
                 return;
             }
-
-            navigate("/auth?state=login");
+            if (location.pathname === "/auth") {
+                navigate(currentURL);
+            } else {
+                navigate("/auth?state=login");
+            }
         };
 
         if (globalContext && !checked) {
@@ -101,12 +108,8 @@ function App() {
     //     );
     // };
 
-    const getProfile = () => {
-        globalContext.fetch.get(api().user.profile, {});
-    };
-
     return (
-        <GlobalContext.Provider value={{ socket, fetch: globalContext.fetch }}>
+        <GlobalContext.Provider value={{ socket, fetch: globalContext.fetch, isLogged, updateLogState: setIsLogged }}>
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />
@@ -115,7 +118,6 @@ function App() {
                     <Route path="/*" element={<NoMatch />} />
                 </Route>
             </Routes>
-            <button onClick={getProfile}>Get Profile</button>
         </GlobalContext.Provider>
     );
 }

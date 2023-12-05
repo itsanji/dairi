@@ -4,6 +4,8 @@ import React from "react";
 interface IGlobalContext {
     socket: WebSocket | null;
     fetch: AxiosInstance;
+    isLogged: boolean;
+    updateLogState: (isLogged: boolean) => void;
 }
 
 const fetch = axios.create({
@@ -12,7 +14,9 @@ const fetch = axios.create({
 
 const GlobalContext = React.createContext<IGlobalContext>({
     socket: null,
-    fetch
+    fetch,
+    isLogged: false,
+    updateLogState: () => {}
 });
 
 export { GlobalContext, type IGlobalContext };
