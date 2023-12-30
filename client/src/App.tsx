@@ -4,7 +4,7 @@ import { GlobalContext } from "./contexts/globalContext";
 import type { App } from "../../server/src/";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Layout from "./pages/Layout";
+import Layout from "./components/Layout";
 import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";

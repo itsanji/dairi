@@ -47,27 +47,65 @@ const Register: React.FC = () => {
 
     return (
         <>
-            <h3>Register</h3>
-            <form onSubmit={registerHandler}>
-                <div>
-                    <input type="text" value={username} placeholder="username" onChange={(e) => setUsername(e.currentTarget.value)} />
+            <h3 className="text-lg font-bold text-center mb-4">Register</h3>
+            <form onSubmit={registerHandler} className="max-w-sm mx-auto p-4">
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={username}
+                        placeholder="username"
+                        onChange={(e) => setUsername(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="text" value={email} placeholder="email" onChange={(e) => setEmail(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={email}
+                        placeholder="email"
+                        onChange={(e) => setEmail(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="text" value={firstname} placeholder="firstname" onChange={(e) => setFirstname(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={firstname}
+                        placeholder="firstname"
+                        onChange={(e) => setFirstname(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="text" value={lastname} placeholder="lastname" onChange={(e) => setLastname(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={lastname}
+                        placeholder="lastname"
+                        onChange={(e) => setLastname(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="password" value={password} placeholder="password" onChange={(e) => setPassword(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="password"
+                        value={password}
+                        placeholder="password"
+                        onChange={(e) => setPassword(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="password" value={repassword} placeholder="re-password" onChange={(e) => setRePassword(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="password"
+                        value={repassword}
+                        placeholder="re-password"
+                        onChange={(e) => setRePassword(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Submit
+                </button>
             </form>
         </>
     );

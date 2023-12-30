@@ -20,12 +20,15 @@ const Login: React.FC = () => {
                 password
             })
             .then(({ data }) => {
-                console.log(data);
                 if (data.success) {
                     toast("logged in");
                     afterAuth(data, globalContext);
                     globalContext.updateLogState(true);
                     redirectOrigin(navigate);
+                } else {
+                    if (data.success === false) {
+                        toast.error(data.error);
+                    }
                 }
             })
             .catch((e: AxiosError) => {
@@ -38,15 +41,29 @@ const Login: React.FC = () => {
 
     return (
         <>
-            <h3>Login</h3>
-            <form onSubmit={loginHandler}>
-                <div>
-                    <input type="text" value={username} placeholder="email" onChange={(e) => setUsername(e.currentTarget.value)} />
+            <h3 className="text-lg font-bold text-center mb-4">Login</h3>
+            <form onSubmit={loginHandler} className="max-w-sm mx-auto p-4">
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={username}
+                        placeholder="email"
+                        onChange={(e) => setUsername(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <div>
-                    <input type="password" value={password} placeholder="password" onChange={(e) => setPassword(e.currentTarget.value)} />
+                <div className="mb-4">
+                    <input
+                        type="password"
+                        value={password}
+                        placeholder="password"
+                        onChange={(e) => setPassword(e.currentTarget.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    />
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Submit
+                </button>
             </form>
         </>
     );

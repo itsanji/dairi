@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../contexts/globalContext";
 import { constants } from "../utils/constants";
-import "./pages.css";
 
 const Layout: React.FC = () => {
     return (
@@ -27,7 +26,7 @@ const NavBar: React.FC = () => {
     };
 
     return (
-        <div className="navbar-container">
+        <div className="flex justify-end p-10 h-50">
             {globalContext.isLogged ? (
                 <>
                     <p>user logged in</p>
