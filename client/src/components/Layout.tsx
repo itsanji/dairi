@@ -2,15 +2,24 @@ import React, { useContext } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../contexts/globalContext";
 import { constants } from "../utils/constants";
+import Btn from "./UI/Btn";
+import ThemeSelector from "./UI/ThemeSelector";
 
 const Layout: React.FC = () => {
+    const globalContext = useContext(GlobalContext);
+
     return (
-        <>
+        <div
+            data-theme={globalContext.theme}
+            style={{
+                minHeight: "100vh"
+            }}
+        >
             <NavBar />
             <div style={{ padding: "10px" }}>
                 <Outlet />
             </div>
-        </>
+        </div>
     );
 };
 
@@ -22,7 +31,7 @@ const NavBar: React.FC = () => {
         window.localStorage.removeItem(constants.accessTokenKey);
         window.localStorage.removeItem(constants.refreshTokenKey);
         navigate("/auth?state=login");
-        globalContext.updateLogState(false);
+        globalContext.updateAuthState(false);
     };
 
     return (
@@ -30,17 +39,18 @@ const NavBar: React.FC = () => {
             {globalContext.isLogged ? (
                 <>
                     <p>user logged in</p>
-                    <button onClick={logout}>Logout</button>
+                    <Btn onClick={logout}>Logout</Btn>
                 </>
             ) : (
                 <>
-                    <button
+                    <ThemeSelector />
+                    <Btn
                         onClick={() => {
                             navigate("/auth?state=login");
                         }}
                     >
                         Please login
-                    </button>
+                    </Btn>
                 </>
             )}
         </div>

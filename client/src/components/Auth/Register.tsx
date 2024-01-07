@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { GlobalContext } from "../contexts/globalContext";
-import { api } from "../utils/constants";
+import { GlobalContext } from "../../contexts/globalContext";
+import { api } from "../../utils/constants";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

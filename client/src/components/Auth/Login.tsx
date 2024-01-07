@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
-import { GlobalContext } from "../contexts/globalContext";
-import { api } from "../utils/constants";
+import { GlobalContext } from "../../contexts/globalContext";
+import { api } from "../../utils/constants";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { afterAuth, redirectOrigin } from "../utils/afterAuth";
+import { afterAuth, redirectOrigin } from "../../utils/afterAuth";
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
@@ -23,7 +23,7 @@ const Login: React.FC = () => {
                 if (data.success) {
                     toast("logged in");
                     afterAuth(data, globalContext);
-                    globalContext.updateLogState(true);
+                    globalContext.updateAuthState(true);
                     redirectOrigin(navigate);
                 } else {
                     if (data.success === false) {

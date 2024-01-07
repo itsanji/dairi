@@ -5,7 +5,9 @@ interface IGlobalContext {
     socket: WebSocket | null;
     fetch: AxiosInstance;
     isLogged: boolean;
-    updateLogState: (isLogged: boolean) => void;
+    updateAuthState: (isLogged: boolean) => void;
+    theme: SelectableThemes;
+    updateTheme: (newTheme: SelectableThemes) => void;
 }
 
 const fetch = axios.create({
@@ -14,9 +16,11 @@ const fetch = axios.create({
 
 const GlobalContext = React.createContext<IGlobalContext>({
     socket: null,
+    theme: "cupcake",
+    updateTheme: () => {},
     fetch,
     isLogged: false,
-    updateLogState: () => {}
+    updateAuthState: () => {}
 });
 
 export { GlobalContext, type IGlobalContext };

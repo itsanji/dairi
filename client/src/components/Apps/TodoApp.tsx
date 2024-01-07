@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useTodo } from "../hooks/useTodo";
-import { GlobalContext } from "../contexts/globalContext";
+import { useTodo } from "../../hooks/useTodo";
+import { GlobalContext } from "../../contexts/globalContext";
 
 interface TodoProps {
     children?: React.ReactNode;
@@ -25,7 +25,9 @@ const TodoApp: React.FC<TodoProps> = () => {
 
     const { toggleTodo } = useTodo(setTodos);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        globalContext;
+    }, []);
 
     return (
         <>
