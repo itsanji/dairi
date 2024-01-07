@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import "./App.css";
 import { GlobalContext } from "./contexts/globalContext";
-import type { App } from "../../server/src/";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Layout from "./pages/Layout";
+import Layout from "./components/Layout";
 import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";
@@ -14,6 +13,7 @@ import { redirectOrigin, afterAuth } from "./utils/afterAuth";
 function App() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const globalContext = useContext(GlobalContext);
+    const [theme, setTheme] = useState<SelectableThemes>("cupcake");
     const [checked, setChecked] = useState(false);
     const [isLogged, setIsLogged] = useState(false);
     const navigate = useNavigate();
@@ -109,7 +109,7 @@ function App() {
     // };
 
     return (
-        <GlobalContext.Provider value={{ socket, fetch: globalContext.fetch, isLogged, updateLogState: setIsLogged }}>
+        <GlobalContext.Provider value={{ socket, fetch: globalContext.fetch, isLogged, updateAuthState: setIsLogged, theme, updateTheme: setTheme }}>
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />

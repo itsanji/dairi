@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import Login from "../components/Login";
-import Register from "../components/Register";
+import Login from "../components/Auth/Login";
+import Register from "../components/Auth/Register";
+import Btn from "../components/UI/Btn";
 
 const Auth: React.FC = () => {
     const [searchParam, setSearchParam] = useSearchParams();
@@ -14,8 +15,7 @@ const Auth: React.FC = () => {
 
     return (
         <div>
-            <h1>Auth</h1>
-            <button
+            <Btn
                 onClick={() => {
                     setSearchParam((prev) => {
                         prev.set("state", "login");
@@ -24,8 +24,8 @@ const Auth: React.FC = () => {
                 }}
             >
                 Login
-            </button>
-            <button
+            </Btn>
+            <Btn
                 onClick={() => {
                     setSearchParam((prev) => {
                         prev.set("state", "register");
@@ -34,16 +34,8 @@ const Auth: React.FC = () => {
                 }}
             >
                 Register
-            </button>
-            {pageState === "register" ? (
-                <div>
-                    <Register />
-                </div>
-            ) : (
-                <div>
-                    <Login />
-                </div>
-            )}
+            </Btn>
+            <div>{pageState === "register" ? <Register /> : <Login />}</div>
         </div>
     );
 };

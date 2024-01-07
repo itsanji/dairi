@@ -25,10 +25,46 @@ const api = () => {
     };
 };
 
+const selectableThemes: SelectableThemes[] = [
+    "light",
+    "dark",
+    "cupcake",
+    // "bumblebee",
+    // "emerald",
+    // "corporate",
+    "synthwave",
+    "retro",
+    "cyberpunk",
+    "valentine",
+    // "halloween",
+    "garden",
+    // "forest",
+    "aqua",
+    // "lofi",
+    // "pastel",
+    // "fantasy",
+    // "wireframe",
+    // "black",
+    // "luxury",
+    "dracula",
+    // "cmyk",
+    // "autumn",
+    // "business",
+    "acid",
+    "lemonade",
+    "night",
+    "coffee",
+    "winter",
+    // "dim",
+    "nord"
+    // "sunset"
+] as const;
+
 const constants = {
     accessTokenKey: "access",
     refreshTokenKey: "refresh",
-    redirectOriginKey: "redirect-origin"
+    redirectOriginKey: "redirect-origin",
+    selectableThemes
 };
 
 export { api, constants };
