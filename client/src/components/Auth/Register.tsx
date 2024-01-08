@@ -55,7 +55,7 @@ const Register: React.FC = () => {
                         value={username}
                         placeholder="username"
                         onChange={(e) => setUsername(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
                         value={email}
                         placeholder="email"
                         onChange={(e) => setEmail(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -73,7 +73,7 @@ const Register: React.FC = () => {
                         value={firstname}
                         placeholder="firstname"
                         onChange={(e) => setFirstname(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -82,7 +82,7 @@ const Register: React.FC = () => {
                         value={lastname}
                         placeholder="lastname"
                         onChange={(e) => setLastname(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -91,7 +91,7 @@ const Register: React.FC = () => {
                         value={password}
                         placeholder="password"
                         onChange={(e) => setPassword(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -100,10 +100,10 @@ const Register: React.FC = () => {
                         value={repassword}
                         placeholder="re-password"
                         onChange={(e) => setRePassword(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
-                <button type="submit" className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="w-full btn btn-outline btn-neutral">
                     Submit
                 </button>
             </form>

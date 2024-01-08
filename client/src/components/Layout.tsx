@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { GlobalContext } from "../contexts/globalContext";
 import { api, constants } from "../utils/constants";
-import Btn from "./UI/Btn";
-import ThemeSelector from "./UI/ThemeSelector";
 import { afterAuth, redirectOrigin } from "../utils/afterAuth";
+import NavBar from "./UI/NavBar";
 
 const Layout: React.FC = () => {
     const globalContext = useContext(GlobalContext);
@@ -79,40 +78,6 @@ const Layout: React.FC = () => {
             <div style={{ padding: "10px" }}>
                 <Outlet />
             </div>
-        </div>
-    );
-};
-
-const NavBar: React.FC = () => {
-    const globalContext = useContext(GlobalContext);
-    const navigate = useNavigate();
-
-    const logout = () => {
-        window.localStorage.removeItem(constants.accessTokenKey);
-        window.localStorage.removeItem(constants.refreshTokenKey);
-        navigate("/auth?state=login");
-        globalContext.updateAuthState(false);
-    };
-
-    return (
-        <div className="flex justify-end p-10 h-50">
-            {globalContext.isLogged ? (
-                <>
-                    <p>user logged in</p>
-                    <Btn onClick={logout}>Logout</Btn>
-                </>
-            ) : (
-                <>
-                    <ThemeSelector />
-                    <Btn
-                        onClick={() => {
-                            navigate("/auth?state=login");
-                        }}
-                    >
-                        Please login
-                    </Btn>
-                </>
-            )}
         </div>
     );
 };

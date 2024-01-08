@@ -11,7 +11,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({}) => {
     return (
         <>
             <details className="dropdown">
-                <summary className="m-1 btn">{globalContext.theme} ⇓</summary>
+                <summary className="mx-1 btn">{globalContext.theme} ⇓</summary>
                 <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
                     {constants.selectableThemes.map((theme, index) => (
                         <li
