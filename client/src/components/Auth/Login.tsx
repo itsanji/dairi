@@ -49,7 +49,7 @@ const Login: React.FC = () => {
                         value={username}
                         placeholder="email"
                         onChange={(e) => setUsername(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <div className="mb-4">
@@ -58,10 +58,10 @@ const Login: React.FC = () => {
                         value={password}
                         placeholder="password"
                         onChange={(e) => setPassword(e.currentTarget.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        className="input input-bordered input-primary w-full"
                     />
                 </div>
-                <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button type="submit" className="w-full btn btn-outline">
                     Submit
                 </button>
             </form>
