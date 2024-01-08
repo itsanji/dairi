@@ -31,6 +31,8 @@ function afterAuth(reqData: any, globalContext: IGlobalContext) {
         config.headers.Authorization = "Bearer " + newAccessToken;
         return config;
     });
+
+    globalContext.updateAuthState(true);
 }
 
 export { redirectOrigin, afterAuth };
