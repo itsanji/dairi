@@ -14,7 +14,7 @@ export class User {
     @Column()
     password: string;
 
-    @OneToOne(() => Profile, { eager: true })
+    @OneToOne(() => Profile, { eager: true, onDelete: "CASCADE" })
     @JoinColumn()
     profile: Profile;
 

@@ -1,4 +1,4 @@
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToOne } from "typeorm";
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from "typeorm";
 @Entity()
 export class Profile {
     @PrimaryGeneratedColumn("increment")
