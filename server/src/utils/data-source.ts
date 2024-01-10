@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "../entity/User";
 import { Profile } from "../entity/Profile";
+import { Settings } from "../entity/Settings";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: Bun.env.APP_DB,
     synchronize: true,
     logging: false,
-    entities: [User, Profile],
+    entities: [User, Profile, Settings],
     migrations: [],
     subscribers: []
 });
