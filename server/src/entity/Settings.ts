@@ -1,22 +1,10 @@
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToOne, JoinColumn } from "typeorm";
-import { Profile } from "./Profile";
+import { User } from "./User";
+
 @Entity()
-export class User {
+export class Settings {
     @PrimaryGeneratedColumn("uuid")
     id: string;
-
-    @Column({ unique: true })
-    username: string;
-
-    @Column({ unique: true })
-    email: string;
-
-    @Column()
-    password: string;
-
-    @OneToOne(() => Profile, { eager: true, onDelete: "CASCADE" })
-    @JoinColumn()
-    profile: Profile;
 
     @CreateDateColumn({
         type: "timestamp",
@@ -30,4 +18,15 @@ export class User {
         onUpdate: "CURRENT_TIMESTAMP(6)"
     })
     updatedAt: Date;
+
+    @Column({ default: "light" })
+    theme: string;
+
+    @Column("simple-array")
+    apps: string[];
+
+    // Relations
+    @OneToOne(() => User, { onDelete: "CASCADE" })
+    @JoinColumn()
+    user: User;
 }

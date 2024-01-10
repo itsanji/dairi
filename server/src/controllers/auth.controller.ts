@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { plugins } from "../utils/plugins";
+import { decorations } from "../utils/plugins";
 import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import { ErrorMessage, MessageList } from "../utils/messages";
@@ -7,12 +7,13 @@ import { Profile } from "../entity/Profile";
 import jwt from "jsonwebtoken";
 import { constants } from "../utils/constants";
 import { jwtVerify } from "../utils/jwtUtils";
+import { Settings } from "../entity/Settings";
 
 export const authController = new Elysia({
     name: "auth",
     prefix: "auth"
 })
-    .use(plugins)
+    .use(decorations)
     .post(
         "register",
         async ({ body, db }) => {
@@ -52,6 +53,12 @@ export const authController = new Elysia({
                 newUser.profile = userProfile;
 
                 await db.manager.getRepository(User).save(newUser);
+
+                // create default setting
+                const userSetting = new Settings();
+                userSetting.apps = [];
+                userSetting.user = newUser;
+                await db.manager.getRepository(Settings).save(userSetting);
 
                 return {
                     success: true,
