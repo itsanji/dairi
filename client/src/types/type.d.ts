@@ -1,5 +1,39 @@
 type Themes = "dark" | "light" | "cupcake" | "cyberpunk";
 
+interface ITodo {
+    id: number;
+    name: string;
+    isDone: boolean;
+    addedAt: string;
+}
+
+interface IUser {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    createdAt: string;
+    updatedAt: string;
+    profile: IProfile;
+    settings: Settings;
+}
+
+interface IProfile {
+    id: number;
+    firstname: string;
+    lastname: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface ISettings {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    theme: string;
+    apps: any[];
+}
+
 type SelectableThemes = (readonly [
     "light",
     "dark",
@@ -34,10 +68,3 @@ type SelectableThemes = (readonly [
     "nord",
     "sunset"
 ])[number];
-
-interface ITodo {
-    id: number;
-    name: string;
-    isDone: boolean;
-    addedAt: string;
-}
