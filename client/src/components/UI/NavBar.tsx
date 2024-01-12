@@ -16,6 +16,7 @@ const NavBar: React.FC = () => {
         window.localStorage.removeItem(constants.refreshTokenKey);
         navigate("/auth?state=login");
         globalContext.updateAuthState(false);
+        setShowMenu(false);
     };
 
     const username = useMemo(() => {
@@ -43,7 +44,7 @@ const NavBar: React.FC = () => {
                         {showMenu ? (
                             <div className="fixed top-0 left-0 w-screen h-screen" onClick={() => setShowMenu(false)}>
                                 <ul
-                                    className="absolute top-0 right-0 menu bg-base-200 w-56 rounded-box"
+                                    className="absolute top-2 right-2 menu bg-base-200 w-56 rounded-box"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         console.log("ul clicked");
@@ -54,13 +55,13 @@ const NavBar: React.FC = () => {
                                         <MinidenticonImg username={username} />
                                     </li>
                                     <li>
-                                        <a>Profile</a>
+                                        <div>Profile</div>
                                     </li>
                                     <li>
-                                        <a>Settings</a>
+                                        <div>Settings</div>
                                     </li>
                                     <li>
-                                        <a>Logout</a>
+                                        <div onClick={logout}>Logout</div>
                                     </li>
                                 </ul>
                             </div>
