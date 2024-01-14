@@ -1,5 +1,15 @@
 type Themes = "dark" | "light" | "cupcake" | "cyberpunk";
 
+interface SocketMessage<T = SocketData> {
+    type: string;
+    data: T;
+}
+
+interface SocketData {
+    msg?: string;
+    [any: string]: any;
+}
+
 interface ITodo {
     id: number;
     name: string;

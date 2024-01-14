@@ -23,13 +23,19 @@ const privateRoute = new Elysia({
             message: error.message
         };
     })
-    .derive(async ({ headers, db }) => {
-        const authHeader = headers["authorization"];
-        if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
-            throw new Error(ErrorMessage.noAuthProvided);
+    .derive(async ({ headers, db, request, query }) => {
+        let token = "";
+        const connectionType = request.headers.get("connection");
+        if (connectionType === "Upgrade") {
+            token = query[constants.accessTokenKey] || "";
+        } else {
+            const authHeader = headers["authorization"];
+            if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
+                throw new Error(ErrorMessage.noAuthProvided);
+            }
+            token = authHeader.split(" ")[1];
         }
 
-        const token = authHeader.split(" ")[1];
         const info = jwtVerify<AccessToken>(token, constants.jwtSecret);
         if (!info) {
             throw new Error(ErrorMessage.tokenInvalid);
