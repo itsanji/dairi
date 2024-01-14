@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.Fragment>
         <BrowserRouter>
             <App />
-            <ToastContainer />
+            <ToastContainer draggable={false} />
         </BrowserRouter>
     </React.Fragment>
 );

@@ -7,6 +7,7 @@ interface MinidenticonImgProps {
     lightness?: string;
     style?: CSSProperties;
     className?: string;
+    onClick?: () => void;
 }
 
 const MinidenticonImg: React.FC<MinidenticonImgProps> = ({ username, saturation, lightness, ...props }) => {
