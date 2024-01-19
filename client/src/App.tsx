@@ -8,49 +8,35 @@ import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";
 import Test from "./pages/Test";
-import { api } from "./utils/constants";
+import { api, constants } from "./utils/constants";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { SocketInstance } from "./utils/SocketInstance";
 
 function App() {
-    const [socket, setSocket] = useState<WebSocket | null>(null);
     const globalContext = useContext(GlobalContext);
     const [user, setUser] = useState<IUser | undefined>(undefined);
     const [theme, setTheme] = useState<SelectableThemes>("cupcake");
     const [isLogged, setIsLogged] = useState(false);
+    const [socket, setSocket] = useState<SocketInstance<SocketData> | null>(null);
 
     // Open Socket when logged in
     useEffect(() => {
         if (isLogged) {
-            let socket = new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws`);
-
-            socket.addEventListener("error", (err) => {
-                console.log({ err });
+            const accessToken = window.localStorage.getItem(constants.accessTokenKey);
+            const socket = new SocketInstance(new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
+                defaultEvents: {
+                    open() {
+                        toast("opened");
+                    },
+                    close() {
+                        toast("closed");
+                    }
+                }
             });
-            socket.onopen = () => {
-                console.log("socket opened");
-                setSocket(socket);
-            };
-            socket.onmessage = (ev) => {
-                console.log("socket message: ", { data: JSON.parse(ev.data as string) });
-            };
-
-            socket.addEventListener("close", () => {
-                console.log("Closed");
-            });
+            setSocket(socket);
         }
     }, [isLogged]);
-
-    // const sendSocketMessage = () => {
-    //     _socket.send(
-    //         JSON.stringify({
-    //             type: "test",
-    //             data: {
-    //                 test: "ok"
-    //             }
-    //         })
-    //     );
-    // };
 
     useEffect(() => {
         // fetch user info after logged in
@@ -73,6 +59,24 @@ function App() {
             getUser();
         }
     }, [isLogged, user]);
+
+    useEffect(() => {
+        if (socket) {
+            socket
+                .on("bruh1", (data) => {
+                    toast(data.msg);
+                })
+                .on("open-id", (data) => {
+                    toast(data.msg);
+                })
+                .on<{ msg: string; data: IUser }>("bruh2", ({ msg, data }) => {
+                    toast(msg + " " + data.username);
+                })
+                .on("bruh3", (data) => {
+                    toast(data.msg);
+                });
+        }
+    }, [socket]);
 
     return (
         <GlobalContext.Provider

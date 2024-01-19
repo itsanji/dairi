@@ -7,7 +7,7 @@ interface SocketMessage<T = SocketData> {
 
 interface SocketData {
     msg?: string;
-    [any: string]: any;
+    data: any;
 }
 
 interface ITodo {
