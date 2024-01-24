@@ -1,3 +1,5 @@
+import log from "./log";
+
 type SocketCallback<Data> = (ev: Data) => void;
 
 interface EventMapper<DataType> {
@@ -77,8 +79,7 @@ export class SocketInstance<SocketDataType> {
         }
 
         this.socket.onmessage = (event) => {
-            console.log({ event, eventMapper: this.eventMapper, room: this.roomId });
-
+            console.log(this.eventMapper);
             let data: MessageEvent<T>;
             try {
                 data = JSON.parse(event.data);
@@ -89,6 +90,31 @@ export class SocketInstance<SocketDataType> {
             }
         };
 
+        return this;
+    }
+
+    /**
+     * join a room, and only recieve that room event
+     * @param roomId room to join ( any string )
+     * @notes This function is chainable
+     */
+    join(_roomId: string) {
+        // implement later
+        return this;
+    }
+
+    /**
+     * Leave current joining room
+     * @notes This function is chainable
+     */
+    leave() {
+        if (this.roomId === this.GLOBAL) {
+            log.warn("currently in global room. unable to leave anywhere");
+            return this;
+        }
+        // delete current room events
+        delete this.eventMapper[this.roomId];
+        this.roomId = this.GLOBAL;
         return this;
     }
 }

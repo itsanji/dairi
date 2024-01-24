@@ -13,7 +13,7 @@ export const wsController = new Elysia({
         }),
         open: (ws) => {
             ws.send({
-                type: "open",
+                type: "open-id",
                 data: { msg: `Connected with ID: ${ws.id}` }
             });
         },
@@ -32,7 +32,8 @@ export const wsController = new Elysia({
                     ws.send({
                         type: "bruh2",
                         data: {
-                            msg: "GODDAMMIT BRUH 2"
+                            msg: "hello",
+                            data: ws.data.user
                         }
                     });
                     break;
