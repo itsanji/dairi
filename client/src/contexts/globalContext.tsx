@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from "axios";
 import React from "react";
+import { SocketInstance } from "../utils/SocketInstance";
 
 interface IGlobalContext {
-    socket: WebSocket | null;
+    socket: SocketInstance<SocketData> | null;
     fetch: AxiosInstance;
     isLogged: boolean;
     updateAuthState: (isLogged: boolean) => void;
