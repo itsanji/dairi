@@ -7,23 +7,17 @@ import { User } from "../entity/User";
 
 const db = await AppDataSource.initialize();
 
-// add db to context
-const decorations = new Elysia({
-    name: "db"
-}).decorate("db", db);
-
 // add user to context
 const privateRoute = new Elysia({
     name: "auth-checker"
 })
-    .use(decorations)
     .onError(({ error }) => {
         return {
             success: false,
             message: error.message
         };
     })
-    .derive(async ({ headers, db, request, query }) => {
+    .resolve({as: "global"}, async ({ headers, request, query }) => {
         let token = "";
         const connectionType = request.headers.get("connection");
         if (connectionType === "Upgrade") {
@@ -48,7 +42,7 @@ const privateRoute = new Elysia({
         if (!user) {
             throw new Error(ErrorMessage.userNotExisted);
         }
-        return { user };
+        return { 'user': user };
     });
 
-export { decorations, privateRoute };
+export { db, privateRoute };

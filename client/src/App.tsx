@@ -7,7 +7,7 @@ import Layout from "./components/Layout";
 import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";
-import Test from "./pages/Test";
+// import Test from "./pages/Test";
 import { api, constants } from "./utils/constants";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -87,7 +87,7 @@ function App() {
                     <Route index element={<Dashboard />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/apps" element={<Apps />} />
-                    <Route path="/test" element={<Test />} />
+                    {/*<Route path="/test" element={<Test />} /> */}
                     <Route path="/*" element={<NoMatch />} />
                 </Route>
             </Routes>
