@@ -1,10 +1,9 @@
 import Elysia, { t } from "elysia";
-import { decorations, privateRoute } from "../utils/plugins";
+import { privateRoute } from "../utils/plugins";
 
 export const wsController = new Elysia({
     prefix: "/ws"
 })
-    .use(decorations)
     .use(privateRoute)
     .ws("/", {
         body: t.Object({

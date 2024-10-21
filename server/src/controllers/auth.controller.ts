@@ -1,5 +1,4 @@
 import Elysia, { t } from "elysia";
-import { decorations } from "../utils/plugins";
 import * as bcrypt from "bcryptjs";
 import { User } from "../entity/User";
 import { ErrorMessage, MessageList } from "../utils/messages";
@@ -8,15 +7,15 @@ import jwt from "jsonwebtoken";
 import { constants } from "../utils/constants";
 import { jwtVerify } from "../utils/jwtUtils";
 import { Settings } from "../entity/Settings";
+import { db } from "../utils/plugins";
 
 export const authController = new Elysia({
     name: "auth",
     prefix: "auth"
 })
-    .use(decorations)
     .post(
         "register",
-        async ({ body, db }) => {
+        async ({ body }) => {
             if (body.password !== body.rePassword) {
                 return {
                     success: false,
@@ -89,7 +88,7 @@ export const authController = new Elysia({
     )
     .post(
         "login",
-        async ({ body, db }) => {
+        async ({ body  }) => {
             const { username, password } = body;
 
             // If User exist
@@ -135,7 +134,7 @@ export const authController = new Elysia({
             })
         }
     )
-    .get("verify", async ({ headers, db }) => {
+    .get("verify", async ({ headers  }) => {
         // Check if header have bearer token
         // console.log(headers);
         const authHeader = headers["authorization"];
@@ -180,7 +179,7 @@ export const authController = new Elysia({
             data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
         };
     })
-    .get("refresh", async ({ headers, db }) => {
+    .get("refresh", async ({ headers }) => {
         // Check if header have bearer token
         // console.log(headers);
         const authHeader = headers["authorization"];
