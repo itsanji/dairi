@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import "./App.css";
 import { GlobalContext } from "./contexts/globalContext";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
@@ -13,30 +12,53 @@ import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { SocketInstance } from "./utils/SocketInstance";
 
+function createSocket(open: (ev: Event) => void, close: (ev: Event) => void) {
+
+    const accessToken = window.localStorage.getItem(constants.accessTokenKey);
+    const socket = new SocketInstance(new WebSocket(`wss://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
+        defaultEvents: {
+            open,
+            close
+        }
+    });
+    return socket
+}
+
 function App() {
     const globalContext = useContext(GlobalContext);
     const [user, setUser] = useState<IUser | undefined>(undefined);
     const [theme, setTheme] = useState<SelectableThemes>("cupcake");
     const [isLogged, setIsLogged] = useState(false);
+    const [disconnected, setDisconnected] = useState(false);
     const [socket, setSocket] = useState<SocketInstance<SocketData> | null>(null);
 
     // Open Socket when logged in
     useEffect(() => {
         if (isLogged) {
-            const accessToken = window.localStorage.getItem(constants.accessTokenKey);
-            const socket = new SocketInstance(new WebSocket(`ws://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
-                defaultEvents: {
-                    open() {
-                        toast("opened");
-                    },
-                    close() {
-                        toast("closed");
-                    }
-                }
-            });
+            const socket = createSocket(
+                () => { console.log("open") },
+                () => { console.log("close"), setDisconnected(true) }
+            );
             setSocket(socket);
         }
     }, [isLogged]);
+
+    // reconnect socket on windows focus ( if disconnected )
+    useEffect(() => {
+        const reconnect = () => {
+            if (disconnected) {
+                toast("reconnecting")
+                const socket = createSocket(
+                    () => { console.log("connection re-established") },
+                    () => { console.log("close"), setDisconnected(true) }
+                );
+                setSocket(socket);
+                setDisconnected(false)
+            }
+        }
+        window.addEventListener("focus", reconnect);
+        return () => window.removeEventListener("focus", reconnect)
+    }, [disconnected])
 
     useEffect(() => {
         // fetch user info after logged in
@@ -67,7 +89,7 @@ function App() {
                     toast(data.msg);
                 })
                 .on("open-id", (data) => {
-                    toast(data.msg);
+                    console.log(data.msg);
                 })
                 .on<{ msg: string; data: IUser }>("bruh2", ({ msg, data }) => {
                     toast(msg + " " + data.username);

@@ -74,6 +74,7 @@ const NavBar: React.FC = () => {
                             />
                         )}
                     </div>
+                    <ThemeSelector />
                     <Btn onClick={logout}>Logout</Btn>
                 </>
             ) : (

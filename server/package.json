@@ -14,10 +14,12 @@
     "@elysiajs/swagger": "^1.1.5",
     "@grotto/logysia": "^0.1.4",
     "bcryptjs": "^2.4.3",
+    "croner": "^9.0.0",
     "elysia": "^1.1.22",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.2",
     "pg": "^8.4.0",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "0.3.17"
   },

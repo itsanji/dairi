@@ -24,7 +24,7 @@ export const authController = new Elysia({
             }
             // check if user existed
             const isExisted = await db.manager.getRepository(User).findOne({
-                where: { username: body.username }
+                where: [{ username: body.username }, {email: body.email}]
             });
 
             if (isExisted) {
