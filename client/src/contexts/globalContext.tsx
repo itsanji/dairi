@@ -19,10 +19,10 @@ const fetch = axios.create({
 const GlobalContext = React.createContext<IGlobalContext>({
     socket: null,
     theme: "cupcake",
-    updateTheme: () => {},
+    updateTheme: () => { },
     fetch,
     isLogged: false,
-    updateAuthState: () => {},
+    updateAuthState: () => { },
     user: undefined
 });
 

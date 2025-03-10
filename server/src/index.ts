@@ -8,6 +8,7 @@ import { wsController } from "./controllers/ws.controller";
 import { logger } from "./utils/log";
 import { jobEntry } from "./jobs/index.job";
 import { serverController } from "./controllers/system.controller";
+import { toolsController } from "./controllers/tools.controller";
 
 const app = new Elysia()
     .use(logger())
@@ -19,6 +20,7 @@ const app = new Elysia()
     .use(authController)
     .use(userController)
     .use(serverController)
+    .use(toolsController)
     .use(wsController)
     .listen(Bun.env.PORT || 4000);
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);

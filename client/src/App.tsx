@@ -34,6 +34,7 @@ function App() {
 
     // Open Socket when logged in
     useEffect(() => {
+        console.log(import.meta.env)
         if (isLogged) {
             const socket = createSocket(
                 () => { console.log("open") },

@@ -1,13 +1,13 @@
-const base = `https://${import.meta.env.VITE_APP_BE_URL}`;
+const base = `http://${import.meta.env.VITE_APP_BE_URL}`;
 
 const api = () => {
     // Path Define
     const auth = base + "/auth";
 
-    // User
+    // Base
     const user = base + "/user";
-
     const server = base + "/server";
+    const tools = base + "/tools";
 
     const serverGroup = {
         info: server + "/info"
@@ -25,10 +25,15 @@ const api = () => {
         profile: user + "/profile"
     };
 
+    const toolsGroup = {
+        script: tools + "/script"
+    };
+
     return {
         auth: authGroup,
         user: userGroup,
-        server: serverGroup
+        server: serverGroup,
+        tools: toolsGroup
     };
 };
 
