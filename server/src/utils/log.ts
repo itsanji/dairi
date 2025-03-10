@@ -1,81 +1,79 @@
-import Elysia from "elysia"
-import * as pc from "picocolors"
-import process from "process"
+import Elysia from "elysia";
+import * as pc from "picocolors";
+import process from "process";
 
 /**
  * This code is belonging to https://github.com/tristanisham
- * under below repo: 
+ * under below repo:
  * https://github.com/tristanisham
  * Copied because having problem related to this issue: https://github.com/tristanisham/logysia/issues/17
  */
 
 interface Writer {
-  write: (message: string) => void
+    write: (message: string) => void;
 }
 
 const consoleWriter: Writer = {
     write(message: string) {
-      console.log(message)
+        console.log(message);
     }
-}
+};
 
 interface Options {
-    logIP?: boolean,
-    writer?: Writer
+    logIP?: boolean;
+    writer?: Writer;
 }
 
-
 export const logger = (options?: Options) => {
-    const { write } = options?.writer || consoleWriter
+    const { write } = options?.writer || consoleWriter;
     return new Elysia({
         name: "@grotto/logysia"
     })
         .onRequest((ctx) => {
-            ctx.store = { ...ctx.store, beforeTime: process.hrtime.bigint() }
+            ctx.store = { ...ctx.store, beforeTime: process.hrtime.bigint() };
         })
 
         .onBeforeHandle({ as: "global" }, (ctx) => {
-            ctx.store = { ...ctx.store, beforeTime: process.hrtime.bigint() }
+            ctx.store = { ...ctx.store, beforeTime: process.hrtime.bigint() };
         })
         .onAfterHandle({ as: "global" }, ({ request, store }) => {
-            const logStr: string[] = []
+            const logStr: string[] = [];
             if (options !== undefined && options.logIP) {
                 if (request.headers.get("X-Forwarded-For")) {
-                    logStr.push(`[${pc.cyan(request.headers.get("X-Forwarded-For"))}]`)
+                    logStr.push(`[${pc.cyan(request.headers.get("X-Forwarded-For"))}]`);
                 }
             }
 
-            logStr.push(methodString(request.method))
+            logStr.push(methodString(request.method));
 
-            logStr.push(new URL(request.url).pathname)
+            logStr.push(new URL(request.url).pathname);
             const beforeTime: bigint = (store as any).beforeTime;
 
-            logStr.push(durationString(beforeTime))
+            logStr.push(durationString(beforeTime));
 
-            write(logStr.join(" "))
+            write(logStr.join(" "));
         })
         .onError({ as: "global" }, ({ request, error, store }) => {
-            const logStr: string[] = []
+            const logStr: string[] = [];
 
-            logStr.push(pc.red(methodString(request.method)))
+            logStr.push(pc.red(methodString(request.method)));
 
-            logStr.push(new URL(request.url).pathname)
+            logStr.push(new URL(request.url).pathname);
 
-            logStr.push(pc.red("Error"))
+            logStr.push(pc.red("Error"));
 
             if ("status" in error) {
-                logStr.push(String(error.status))
+                logStr.push(String(error.status));
             }
 
-            logStr.push(error.message)
+            logStr.push(error.message);
             const beforeTime: bigint = (store as any).beforeTime;
 
-            logStr.push(durationString(beforeTime))
+            logStr.push(durationString(beforeTime));
 
-            write(logStr.join(" "))
-        })
-}
-
+            write(logStr.join(" "));
+        });
+};
 
 function durationString(beforeTime: bigint): string {
     const now = process.hrtime.bigint();
@@ -100,39 +98,38 @@ function durationString(beforeTime: bigint): string {
     return timeMessage;
 }
 
-
 function methodString(method: string): string {
     switch (method) {
         case "GET":
             // Handle GET request
-            return pc.white("GET")
+            return pc.white("GET");
 
         case "POST":
             // Handle POST request
-            return pc.yellow("POST")
+            return pc.yellow("POST");
 
         case "PUT":
             // Handle PUT request
-            return pc.blue("PUT")
+            return pc.blue("PUT");
 
         case "DELETE":
             // Handle DELETE request
-            return pc.red("DELETE")
+            return pc.red("DELETE");
 
         case "PATCH":
             // Handle PATCH request
-            return pc.green("PATCH")
+            return pc.green("PATCH");
 
         case "OPTIONS":
             // Handle OPTIONS request
-            return pc.gray("OPTIONS")
+            return pc.gray("OPTIONS");
 
         case "HEAD":
             // Handle HEAD request
-            return pc.magenta("HEAD")
+            return pc.magenta("HEAD");
 
         default:
             // Handle unknown request method
-            return method
+            return method;
     }
 }

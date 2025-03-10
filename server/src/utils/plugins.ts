@@ -17,7 +17,7 @@ const privateRoute = new Elysia({
             message: error.message
         };
     })
-    .resolve({as: "global"}, async ({ headers, request, query }) => {
+    .resolve({ as: "global" }, async ({ headers, request, query }) => {
         let token = "";
         const connectionType = request.headers.get("connection");
         if (connectionType === "Upgrade") {
@@ -42,7 +42,7 @@ const privateRoute = new Elysia({
         if (!user) {
             throw new Error(ErrorMessage.userNotExisted);
         }
-        return { 'user': user };
+        return { user: user };
     });
 
 export { db, privateRoute };

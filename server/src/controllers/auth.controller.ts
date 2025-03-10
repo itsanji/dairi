@@ -24,7 +24,7 @@ export const authController = new Elysia({
             }
             // check if user existed
             const isExisted = await db.manager.getRepository(User).findOne({
-                where: [{ username: body.username }, {email: body.email}]
+                where: [{ username: body.username }, { email: body.email }]
             });
 
             if (isExisted) {
@@ -88,7 +88,7 @@ export const authController = new Elysia({
     )
     .post(
         "login",
-        async ({ body  }) => {
+        async ({ body }) => {
             const { username, password } = body;
 
             // If User exist
@@ -134,7 +134,7 @@ export const authController = new Elysia({
             })
         }
     )
-    .get("verify", async ({ headers  }) => {
+    .get("verify", async ({ headers }) => {
         // Check if header have bearer token
         // console.log(headers);
         const authHeader = headers["authorization"];
