@@ -10,7 +10,7 @@ declare module "bun" {
         JWT_ACCS_EXPIRE: string;
         JWT_REFR_EXPIRE: string;
         EXCHANGE_RATE_API_KEY: string;
-        EXCHANGE_RATE_ENDPOINT: string
+        EXCHANGE_RATE_ENDPOINT: string;
     }
 }
 

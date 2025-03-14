@@ -1,36 +1,36 @@
 {
-  "name": "hi-elysia",
-  "version": "1.0.50",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts",
-    "start": "ts-node src/index.ts",
-    "pretty": "prettier -w --config ./.prettierrc ./",
-    "typeorm": "typeorm-ts-node-commonjs"
-  },
-  "dependencies": {
-    "@elysiajs/cookie": "^0.8.0",
-    "@elysiajs/cors": "^1.1.1",
-    "@elysiajs/swagger": "^1.1.5",
-    "@grotto/logysia": "^0.1.4",
-    "bcryptjs": "^2.4.3",
-    "croner": "^9.0.0",
-    "elysia": "^1.1.22",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.6.2",
-    "pg": "^8.4.0",
-    "redis": "^4.7.0",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "0.3.17"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^16.11.10",
-    "bun-types": "latest",
-    "prettier": "^3.1.0",
-    "ts-node": "10.7.0",
-    "typescript": "latest"
-  },
-  "module": "src/index.js"
+    "name": "hi-elysia",
+    "version": "1.0.50",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "bun run --watch src/index.ts",
+        "start": "ts-node src/index.ts",
+        "pretty": "prettier -w --config ./.prettierrc ./",
+        "typeorm": "typeorm-ts-node-commonjs"
+    },
+    "dependencies": {
+        "@elysiajs/cookie": "^0.8.0",
+        "@elysiajs/cors": "^1.1.1",
+        "@elysiajs/swagger": "^1.1.5",
+        "@grotto/logysia": "^0.1.4",
+        "bcryptjs": "^2.4.3",
+        "croner": "^9.0.0",
+        "elysia": "^1.1.22",
+        "jsonwebtoken": "^9.0.2",
+        "mysql2": "^3.6.2",
+        "pg": "^8.4.0",
+        "redis": "^4.7.0",
+        "reflect-metadata": "^0.1.13",
+        "typeorm": "0.3.17"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^2.4.6",
+        "@types/jsonwebtoken": "^9.0.5",
+        "@types/node": "^16.11.10",
+        "bun-types": "latest",
+        "prettier": "^3.1.0",
+        "ts-node": "10.7.0",
+        "typescript": "latest"
+    },
+    "module": "src/index.js"
 }

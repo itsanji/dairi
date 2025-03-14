@@ -1,4 +1,4 @@
-const base = `https://${import.meta.env.VITE_APP_BE_URL}`;
+const base = `http://${import.meta.env.VITE_APP_BE_URL}`;
 
 const api = () => {
     // Path Define
@@ -11,6 +11,10 @@ const api = () => {
 
     const serverGroup = {
         info: server + "/info"
+    };
+
+    const exchangeGroup = {
+        exchangeRate: base + "/jobs/exchange-rate"
     };
 
     // Endpoit Define
@@ -28,7 +32,8 @@ const api = () => {
     return {
         auth: authGroup,
         user: userGroup,
-        server: serverGroup
+        server: serverGroup,
+        exchangeGroup
     };
 };
 
