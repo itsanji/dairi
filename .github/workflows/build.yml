@@ -14,7 +14,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run : | 
         # show the path
-        pwd;
+        pwd
         echo "Hello, World!"
         cd client && bun run build
         cd ../server && bun run build
