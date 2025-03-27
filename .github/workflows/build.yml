@@ -16,5 +16,5 @@ jobs:
                   # show the path
                   pwd
                   echo "Hello, World!"
-                  cd client && bun run build
-                  cd ../server && bun run build
+                  cd client && bun install && bun run build
+                  cd ../server && bun install && bun run build
