@@ -1,0 +1,20 @@
+name: Test build action
+
+on: 
+  push:
+    branches:
+      - 'develop'
+      - 'test/**'
+jobs:
+  build:
+    name: Test Build with Bun in Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run : | 
+        # show the path
+        pwd;
+        echo "Hello, World!"
+        cd client && bun run build
+        cd ../server && bun run build
