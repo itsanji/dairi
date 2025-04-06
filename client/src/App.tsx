@@ -15,7 +15,7 @@ import { SocketInstance } from "./utils/SocketInstance";
 function createSocket(open: (ev: Event) => void, close: (ev: Event) => void) {
 
     const accessToken = window.localStorage.getItem(constants.accessTokenKey);
-    const socket = new SocketInstance(new WebSocket(`wss://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
+    const socket = new SocketInstance(new WebSocket(import.meta.env.PROD ? `wss://${import.meta.env.VITE_APP_PROD_BE_URL}/ws?access=${accessToken}` : `ws://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
         defaultEvents: {
             open,
             close

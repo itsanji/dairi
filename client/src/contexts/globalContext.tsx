@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import React from "react";
 import { SocketInstance } from "../utils/SocketInstance";
+import { base as baseUrl } from "../utils/constants";
 
 interface IGlobalContext {
     socket: SocketInstance<SocketData> | null;
@@ -13,16 +14,16 @@ interface IGlobalContext {
 }
 
 const fetch = axios.create({
-    baseURL: import.meta.env.VITE_APP_BE_URL
+    baseURL: baseUrl
 });
 
 const GlobalContext = React.createContext<IGlobalContext>({
     socket: null,
     theme: "cupcake",
-    updateTheme: () => {},
+    updateTheme: () => { },
     fetch,
     isLogged: false,
-    updateAuthState: () => {},
+    updateAuthState: () => { },
     user: undefined
 });
 

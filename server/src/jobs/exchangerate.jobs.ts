@@ -1,7 +1,7 @@
-import Elysia, { t, type InferContext } from "elysia";
-import { jobEntry } from "./index.job";
+import Elysia from "elysia";
 import { Cron } from "croner";
 import { redisClient } from "../utils/redis";
+import { successResponse, errorResponse } from "../utils/responseWrapper";
 
 interface ExchangeRateResponse {
     result: string;
@@ -83,24 +83,13 @@ const exchangeRate = new Elysia({ name: "exchange-rate" }).get("/exchange-rate",
         const rateData = await redisClient.get("exchange:rate");
 
         if (!rateData) {
-            return {
-                success: false,
-                message: "Exchange rate data not available yet"
-            };
+            return errorResponse("Exchange rate data not available yet");
         }
 
         const exchangeData: ExchangeRateData = JSON.parse(rateData);
-
-        return {
-            success: true,
-            data: exchangeData
-        };
+        return successResponse(exchangeData);
     } catch (error) {
-        return {
-            success: false,
-            message: "Failed to retrieve exchange rate data",
-            error: String(error)
-        };
+        return errorResponse(`Failed to retrieve exchange rate data: ${String(error)}`);
     }
 });
 

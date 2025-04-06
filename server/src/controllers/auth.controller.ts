@@ -8,6 +8,7 @@ import { constants } from "../utils/constants";
 import { jwtVerify } from "../utils/jwtUtils";
 import { Settings } from "../entity/Settings";
 import { db } from "../utils/plugins";
+import { successResponse, errorResponse } from "../utils/responseWrapper";
 
 export const authController = new Elysia({
     name: "auth",
@@ -17,21 +18,16 @@ export const authController = new Elysia({
         "register",
         async ({ body }) => {
             if (body.password !== body.rePassword) {
-                return {
-                    success: false,
-                    error: ErrorMessage.retypePwd
-                };
+                return errorResponse(ErrorMessage.retypePwd);
             }
+
             // check if user existed
             const isExisted = await db.manager.getRepository(User).findOne({
                 where: [{ username: body.username }, { email: body.email }]
             });
 
             if (isExisted) {
-                return {
-                    success: false,
-                    error: ErrorMessage.userExisted
-                };
+                return errorResponse(ErrorMessage.userExisted);
             }
 
             try {
@@ -59,20 +55,14 @@ export const authController = new Elysia({
                 userSetting.user = newUser;
                 await db.manager.getRepository(Settings).save(userSetting);
 
-                return {
-                    success: true,
-                    data: {
-                        message: MessageList.userCreated
-                    }
-                };
+                return successResponse({
+                    message: MessageList.userCreated
+                });
             } catch (e) {
                 // log to file later
                 console.log(e);
                 // return sys error
-                return {
-                    success: false,
-                    error: ErrorMessage.systemError
-                };
+                return errorResponse(ErrorMessage.systemError);
             }
         },
         {
@@ -96,21 +86,16 @@ export const authController = new Elysia({
                 where: [{ username: username }, { email: username }]
             });
             if (!user) {
-                return {
-                    success: false,
-                    error: ErrorMessage.userNotExisted
-                };
+                return errorResponse(ErrorMessage.userNotExisted);
             }
 
             // Comparing password
-            const isSamePwd = bcrypt.compare(password, user.password);
+            const isSamePwd = await bcrypt.compare(password, user.password);
 
             if (!isSamePwd) {
-                return {
-                    success: false,
-                    error: ErrorMessage.wrongPassword
-                };
+                return errorResponse(ErrorMessage.wrongPassword);
             }
+
             const accessToken = jwt.sign({ userId: user.id } as AccessToken, constants.jwtSecret, {
                 expiresIn: constants.jwtAccessExpire
             });
@@ -119,13 +104,10 @@ export const authController = new Elysia({
                 expiresIn: constants.jwtRefreshExpire
             });
 
-            return {
-                success: true,
-                data: {
-                    accessToken,
-                    refreshToken
-                }
-            };
+            return successResponse({
+                accessToken,
+                refreshToken
+            });
         },
         {
             body: t.Object({
@@ -136,22 +118,15 @@ export const authController = new Elysia({
     )
     .get("verify", async ({ headers }) => {
         // Check if header have bearer token
-        // console.log(headers);
         const authHeader = headers["authorization"];
         if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
-            return {
-                success: false,
-                error: ErrorMessage.noAuthProvided
-            };
+            return errorResponse(ErrorMessage.noAuthProvided);
         }
 
         const token = authHeader.split(" ")[1];
         const info = jwtVerify<AccessToken>(token, constants.jwtSecret);
         if (!info) {
-            return {
-                success: false,
-                error: ErrorMessage.tokenInvalid
-            };
+            return errorResponse(ErrorMessage.tokenInvalid);
         }
 
         // Check if user really existed
@@ -160,10 +135,7 @@ export const authController = new Elysia({
         });
 
         if (!userProfile) {
-            return {
-                success: false,
-                error: ErrorMessage.tokenInvalid
-            };
+            return errorResponse(ErrorMessage.tokenInvalid);
         }
 
         const newAccessToken = jwt.sign({ userId: userProfile.id }, constants.jwtSecret, {
@@ -174,29 +146,22 @@ export const authController = new Elysia({
             expiresIn: constants.jwtRefreshExpire
         });
 
-        return {
-            success: true,
-            data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
-        };
+        return successResponse({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
+        });
     })
     .get("refresh", async ({ headers }) => {
         // Check if header have bearer token
-        // console.log(headers);
         const authHeader = headers["authorization"];
         if (!authHeader || authHeader.split(" ")[0] != "Bearer" || authHeader.split(" ")[1] === "") {
-            return {
-                success: false,
-                error: ErrorMessage.noAuthProvided
-            };
+            return errorResponse(ErrorMessage.noAuthProvided);
         }
 
         const token = authHeader.split(" ")[1];
         const info = jwtVerify<RefreshToken>(token, constants.jwtSecret);
         if (!info) {
-            return {
-                success: false,
-                error: ErrorMessage.tokenInvalid
-            };
+            return errorResponse(ErrorMessage.tokenInvalid);
         }
 
         // Check if user really existed
@@ -205,10 +170,7 @@ export const authController = new Elysia({
         });
 
         if (!userProfile) {
-            return {
-                success: false,
-                error: ErrorMessage.tokenInvalid
-            };
+            return errorResponse(ErrorMessage.tokenInvalid);
         }
 
         const newAccessToken = jwt.sign({ userId: userProfile.id }, constants.jwtSecret, {
@@ -219,8 +181,8 @@ export const authController = new Elysia({
             expiresIn: constants.jwtRefreshExpire
         });
 
-        return {
-            success: true,
-            data: { accessToken: newAccessToken, refreshToken: newRefreshToken }
-        };
+        return successResponse({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
+        });
     });

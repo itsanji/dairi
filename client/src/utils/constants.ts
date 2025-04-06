@@ -1,4 +1,4 @@
-const base = `http://${import.meta.env.VITE_APP_BE_URL}`;
+const base = import.meta.env.PROD ? `https://${import.meta.env.VITE_APP_PROD_BE_URL}` : `http://${import.meta.env.VITE_APP_BE_URL}`;
 
 const api = () => {
     // Path Define
@@ -79,4 +79,4 @@ const constants = {
     selectableThemes
 };
 
-export { api, constants };
+export { api, base, constants };
