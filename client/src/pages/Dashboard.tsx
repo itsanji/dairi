@@ -20,17 +20,18 @@ const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [lastUpdated, setLastUpdated] = useState<string>("");
 
+    // getting system info
     useEffect(() => {
         if (globalContext && globalContext.isLogged && !fetched) {
             globalContext.fetch.get(api().server.info)
-                .then(data => {
-                    console.log(data.data)
+                .then(({ data }) => {
                     setSysInfo(data.data.sysInfo);
                 })
             setIsFetched(true)
         }
     }, [globalContext])
 
+    //get exchange rate
     const fetchExchangeRate = async () => {
         setLoading(true);
         try {
@@ -53,12 +54,12 @@ const Dashboard: React.FC = () => {
         if (globalContext && globalContext.isLogged) {
             // Initial fetch
             fetchExchangeRate();
-            
+
             // Set up interval for every 5 minutes (300000 ms)
             const intervalId = setInterval(() => {
                 fetchExchangeRate();
             }, 300000);
-            
+
             // Clean up interval on component unmount
             return () => clearInterval(intervalId);
         }
@@ -70,14 +71,14 @@ const Dashboard: React.FC = () => {
 
         <div className="mt-8">
             <h2 className="text-lg font-medium mb-4">Exchange Rate</h2>
-            
+
             {loading && !exchangeRate && (
                 <div className="flex items-center">
                     <div className="loading loading-spinner loading-md mr-2"></div>
                     <span>Loading exchange rate data...</span>
                 </div>
             )}
-            
+
             {exchangeRate && (
                 <div className="p-4 border rounded-md shadow-sm">
                     <div className="flex justify-between items-center">
@@ -93,7 +94,7 @@ const Dashboard: React.FC = () => {
                         <p>Next update: {exchangeRate.nextUpdate}</p>
                         {lastUpdated && (
                             <p className="text-xs mt-1">
-                                Frontend refresh: {lastUpdated} 
+                                Frontend refresh: {lastUpdated}
                                 (auto-updates every 5 minutes)
                             </p>
                         )}
