@@ -20,7 +20,7 @@ const privateRoute = new Elysia({
     .resolve({ as: "global" }, async ({ headers, request, query }) => {
         let token = "";
         const connectionType = request.headers.get("connection");
-        if (connectionType === "Upgrade") {
+        if (connectionType.includes("Upgrade")) {
             token = query[constants.accessTokenKey] || "";
         } else {
             const authHeader = headers["authorization"];

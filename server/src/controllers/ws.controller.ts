@@ -32,7 +32,7 @@ export const wsController = new Elysia({
                         type: "bruh2",
                         data: {
                             msg: "hello",
-                            data: ws.data.user
+                            data: ws.data
                         }
                     });
                     break;
