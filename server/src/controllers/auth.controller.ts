@@ -20,7 +20,7 @@ export const authController = new Elysia({
             if (body.password !== body.rePassword) {
                 return errorResponse(ErrorMessage.retypePwd);
             }
-            
+
             // check if user existed
             const isExisted = await db.manager.getRepository(User).findOne({
                 where: [{ username: body.username }, { email: body.email }]
@@ -90,12 +90,12 @@ export const authController = new Elysia({
             }
 
             // Comparing password
-            const isSamePwd = bcrypt.compare(password, user.password);
+            const isSamePwd = await bcrypt.compare(password, user.password);
 
             if (!isSamePwd) {
                 return errorResponse(ErrorMessage.wrongPassword);
             }
-            
+
             const accessToken = jwt.sign({ userId: user.id } as AccessToken, constants.jwtSecret, {
                 expiresIn: constants.jwtAccessExpire
             });
@@ -146,9 +146,9 @@ export const authController = new Elysia({
             expiresIn: constants.jwtRefreshExpire
         });
 
-        return successResponse({ 
-            accessToken: newAccessToken, 
-            refreshToken: newRefreshToken 
+        return successResponse({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
         });
     })
     .get("refresh", async ({ headers }) => {
@@ -181,8 +181,8 @@ export const authController = new Elysia({
             expiresIn: constants.jwtRefreshExpire
         });
 
-        return successResponse({ 
-            accessToken: newAccessToken, 
-            refreshToken: newRefreshToken 
+        return successResponse({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
         });
     });
