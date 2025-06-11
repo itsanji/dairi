@@ -1,41 +1,26 @@
 const base = import.meta.env.PROD ? `https://${import.meta.env.VITE_APP_PROD_BE_URL}` : `http://${import.meta.env.VITE_APP_BE_URL}`;
 
-const api = () => {
-    // Path Define
-    const auth = base + "/auth";
-
-    // User
-    const user = base + "/user";
-
-    const server = base + "/server";
-
-    const serverGroup = {
-        info: server + "/info"
-    };
-
-    const exchangeGroup = {
-        exchangeRate: base + "/jobs/exchange-rate"
-    };
-
-    // Endpoit Define
-    const authGroup = {
-        register: auth + "/register",
-        login: auth + "/login",
-        verify: auth + "/verify",
-        refresh: auth + "/refresh"
-    };
-
-    const userGroup = {
-        profile: user + "/profile"
-    };
-
-    return {
-        auth: authGroup,
-        user: userGroup,
-        server: serverGroup,
-        exchangeGroup
-    };
-};
+const api = () => ({
+    auth: {
+        register: "/auth/register",
+        login: "/auth/login",
+        verify: "/auth/verify",
+        refresh: "/auth/refresh"
+    },
+    user: {
+        profile: "/user/profile"
+    },
+    server: {
+        info: "/server/info"
+    },
+    exchangeGroup: {
+        exchangeRate: "/jobs/exchange-rate"
+    },
+    rocket: {
+        schedules: "/rocket/schedules",
+        channels: "/rocket/channels"
+    }
+});
 
 const selectableThemes: SelectableThemes[] = [
     "light",

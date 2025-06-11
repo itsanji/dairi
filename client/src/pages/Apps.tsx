@@ -17,6 +17,13 @@ const apps: AppCard[] = [
         icon: "💱",
         route: "/exchange-rate",
     },
+    {
+        id: "rocket-chat",
+        title: "Scheduled Falcon Messenger",
+        description: "Schedule automated messages to be sent to Rocket Chat channels",
+        icon: "🚀",
+        route: "/rocket-chat",
+    },
     // More apps will be added here later
 ];
 

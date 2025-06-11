@@ -11,6 +11,7 @@ import { api, constants } from "./utils/constants";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { SocketInstance } from "./utils/SocketInstance";
+import RocketChat from "./pages/RocketChat";
 
 function createSocket(open: (ev: Event) => void, close: (ev: Event) => void) {
     const accessToken = window.localStorage.getItem(constants.accessTokenKey);
@@ -120,6 +121,7 @@ function App() {
                     <Route index element={<Dashboard />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/apps" element={<Apps />} />
+                    <Route path="/rocket-chat" element={<RocketChat />} />
                     {/*<Route path="/test" element={<Test />} /> */}
                     <Route path="/*" element={<NoMatch />} />
                 </Route>

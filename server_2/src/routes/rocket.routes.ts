@@ -250,4 +250,132 @@ router.delete("/schedules/:id", authMiddleware, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /rocket/schedules/{id}:
+ *   put:
+ *     tags: [Rocket]
+ *     summary: Edit existing schedule
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example:
+ *             channelId: "CHANNEL_ID"
+ *             message: "Updated message"
+ *             time: "10:00"
+ *             repeat: true
+ *             days: ["Mon", "Wed", "Fri"]
+ */
+router.put("/schedules/:id", authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { channelId, message, time, repeat, days } = req.body;
+
+        // Validate input
+        if (!channelId || !message || !time) {
+            return res.status(400).json({
+                success: false,
+                error: "Channel, message and time are required",
+            });
+        }
+
+        // Get existing schedules
+        const schedulesData = await redisClient.get("rocket:schedules");
+        if (!schedulesData) {
+            return res.status(404).json({
+                success: false,
+                error: "Schedule not found",
+            });
+        }
+
+        const schedules = JSON.parse(schedulesData);
+        const scheduleIndex = schedules.findIndex((s: any) => s.id === id);
+
+        if (scheduleIndex === -1) {
+            return res.status(404).json({
+                success: false,
+                error: "Schedule not found",
+            });
+        }
+
+        // Get token for channel verification
+        const response = await axios.post(`${process.env.ROCKET_CHAT_URL}/api/v1/login`, {
+            user: process.env.ROCKET_CHAT_USER,
+            password: process.env.ROCKET_CHAT_PASSWORD,
+        });
+
+        const { authToken, userId } = response.data.data;
+        const headers = {
+            "X-Auth-Token": authToken,
+            "X-User-Id": userId,
+        };
+
+        // Verify channel exists and get its name
+        let channelName;
+        try {
+            // Try channels first
+            const channelRes = await axios.get(`${process.env.ROCKET_CHAT_URL}/api/v1/channels.info?roomId=${channelId}`, {
+                headers,
+            });
+            channelName = channelRes.data.channel.name;
+        } catch (error) {
+            try {
+                // Try groups (private channels)
+                const groupRes = await axios.get(`${process.env.ROCKET_CHAT_URL}/api/v1/groups.info?roomId=${channelId}`, {
+                    headers,
+                });
+                channelName = groupRes.data.group.name;
+            } catch (error) {
+                try {
+                    // Try teams
+                    const teamRes = await axios.get(`${process.env.ROCKET_CHAT_URL}/api/v1/teams.info?teamId=${channelId}`, {
+                        headers,
+                    });
+                    channelName = teamRes.data.team.name;
+                } catch (error) {
+                    return res.status(404).json({
+                        success: false,
+                        error: "Channel not found or no access",
+                    });
+                }
+            }
+        }
+
+        // Update the schedule
+        const updatedSchedule = {
+            ...schedules[scheduleIndex],
+            channelId,
+            channelName,
+            message,
+            time,
+            repeat: repeat || false,
+            days: repeat ? days : [],
+            updatedAt: new Date().toISOString(),
+        };
+
+        schedules[scheduleIndex] = updatedSchedule;
+        await redisClient.set("rocket:schedules", JSON.stringify(schedules));
+
+        return res.json({
+            success: true,
+            data: updatedSchedule,
+        });
+    } catch (error) {
+        console.error("Error updating schedule:", error);
+        return res.status(500).json({
+            success: false,
+            error: "Failed to update schedule",
+        });
+    }
+});
+
 export default router;
