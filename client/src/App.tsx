@@ -13,7 +13,6 @@ import { AxiosError } from "axios";
 import { SocketInstance } from "./utils/SocketInstance";
 
 function createSocket(open: (ev: Event) => void, close: (ev: Event) => void) {
-
     const accessToken = window.localStorage.getItem(constants.accessTokenKey);
     const socket = new SocketInstance(new WebSocket(import.meta.env.PROD ? `wss://${import.meta.env.VITE_APP_PROD_BE_URL}/ws?access=${accessToken}` : `ws://${import.meta.env.VITE_APP_BE_URL}/ws?access=${accessToken}`), {
         defaultEvents: {
@@ -21,7 +20,7 @@ function createSocket(open: (ev: Event) => void, close: (ev: Event) => void) {
             close
         }
     });
-    return socket
+    return socket;
 }
 
 function App() {
@@ -36,8 +35,14 @@ function App() {
     useEffect(() => {
         if (isLogged) {
             const socket = createSocket(
-                () => { console.log("open") },
-                () => { console.log("close"), setDisconnected(true) }
+                () => {
+                    console.log("WebSocket connected");
+                    setDisconnected(false);
+                },
+                () => {
+                    console.log("WebSocket closed");
+                    setDisconnected(true);
+                }
             );
             setSocket(socket);
         }
@@ -46,19 +51,25 @@ function App() {
     // reconnect socket on windows focus ( if disconnected )
     useEffect(() => {
         const reconnect = () => {
-            if (disconnected) {
-                toast("reconnecting")
+            if (disconnected && isLogged) {
+                toast("Reconnecting to WebSocket...");
                 const socket = createSocket(
-                    () => { console.log("connection re-established") },
-                    () => { console.log("close"), setDisconnected(true) }
+                    () => {
+                        console.log("WebSocket reconnected");
+                        setDisconnected(false);
+                        toast.success("Reconnected!");
+                    },
+                    () => {
+                        console.log("WebSocket closed");
+                        setDisconnected(true);
+                    }
                 );
                 setSocket(socket);
-                setDisconnected(false)
             }
         }
         window.addEventListener("focus", reconnect);
-        return () => window.removeEventListener("focus", reconnect)
-    }, [disconnected])
+        return () => window.removeEventListener("focus", reconnect);
+    }, [disconnected, isLogged]);
 
     useEffect(() => {
         // fetch user info after logged in
@@ -96,7 +107,7 @@ function App() {
                 })
                 .on("bruh3", (data) => {
                     toast(data.msg);
-                });
+                })
         }
     }, [socket]);
 

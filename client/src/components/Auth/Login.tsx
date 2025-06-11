@@ -6,6 +6,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { afterAuth, redirectOrigin } from "../../utils/afterAuth";
 
+interface ErrorResponse {
+    success: boolean;
+    message: string;
+}
+
 const Login: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -21,20 +26,19 @@ const Login: React.FC = () => {
             })
             .then(({ data }) => {
                 if (data.success) {
-                    toast("logged in");
+                    toast("Logged in successfully");
                     afterAuth(data, globalContext);
-                    globalContext.updateAuthState(true);
                     redirectOrigin(navigate);
                 } else {
-                    if (data.success === false) {
-                        toast.error(data.error);
-                    }
+                    toast.error(data.message || "Login failed");
                 }
             })
-            .catch((e: AxiosError) => {
-                if (e.response) {
+            .catch((e: AxiosError<ErrorResponse>) => {
+                if (e.response?.data) {
                     console.log(e.response.data);
-                    toast.error("loggin failed. check credentials");
+                    toast.error(e.response.data.message || "Login failed. Please check your credentials.");
+                } else {
+                    toast.error("Login failed. Please try again.");
                 }
             });
     };
@@ -47,7 +51,7 @@ const Login: React.FC = () => {
                     <input
                         type="text"
                         value={username}
-                        placeholder="email"
+                        placeholder="Username or Email"
                         onChange={(e) => setUsername(e.currentTarget.value)}
                         className="input input-bordered input-primary w-full"
                     />
@@ -56,13 +60,13 @@ const Login: React.FC = () => {
                     <input
                         type="password"
                         value={password}
-                        placeholder="password"
+                        placeholder="Password"
                         onChange={(e) => setPassword(e.currentTarget.value)}
                         className="input input-bordered input-primary w-full"
                     />
                 </div>
                 <button type="submit" className="w-full btn btn-outline">
-                    Submit
+                    Login
                 </button>
             </form>
         </>
