@@ -14,7 +14,7 @@ const privateRoute = new Elysia({
     .onError(({ error }) => {
         return {
             success: false,
-            message: error.message
+            message: (error as Error).message
         };
     })
     .resolve({ as: "global" }, async ({ headers, request, query }) => {

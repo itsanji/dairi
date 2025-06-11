@@ -4,7 +4,32 @@ import { redisClient } from "../utils/redis";
 
 const router = Router();
 
-// Get current exchange rate
+/**
+ * @swagger
+ * /jobs/exchange-rate:
+ *   get:
+ *     tags: [Exchange]
+ *     summary: Get current exchange rate
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 base: USD
+ *                 target: JPY
+ *                 rate: 144.7742
+ *                 lastUpdated: "2024-03-11T00:00:01.000Z"
+ *                 nextUpdate: "2024-03-11T01:00:01.000Z"
+ *       404:
+ *         description: Data not available
+ *       500:
+ *         description: Server error
+ */
 router.get("/exchange-rate", authMiddleware, async (_req, res) => {
     try {
         const rateData = await redisClient.get("exchange:rate");
@@ -31,7 +56,29 @@ router.get("/exchange-rate", authMiddleware, async (_req, res) => {
     }
 });
 
-// Update exchange rate settings
+/**
+ * @swagger
+ * /jobs/exchange-rate/settings:
+ *   put:
+ *     tags: [Exchange]
+ *     summary: Update currency pair settings
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example:
+ *             base: USD
+ *             target: THB
+ *     responses:
+ *       200:
+ *         description: Settings updated
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Server error
+ */
 router.put("/exchange-rate/settings", authMiddleware, async (req, res) => {
     try {
         const { base, target } = req.body;
