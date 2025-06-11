@@ -1,7 +1,8 @@
 import { exchangeRateJob } from "./exchange.job";
+import { rocketChatJob } from "./rocket.job";
 
 // List of all jobs
-const jobs = [exchangeRateJob];
+const jobs = [exchangeRateJob, rocketChatJob];
 
 // Function to initialize and start all jobs
 export function startJobs() {

@@ -14,6 +14,8 @@ import { systemRouter } from "./routes/system.routes.js";
 import exchangeRoutes from "./routes/exchange.routes";
 import { setupWebSocket } from "./websocket/ws.handler.js";
 import { startJobs } from "./jobs/index.job";
+import rocketRoutes from "./routes/rocket.routes";
+import { rocketChatJob } from "./jobs/rocket.job";
 
 const app = express();
 const port = Bun.env.PORT || 4000;
@@ -57,6 +59,7 @@ app.use("/auth", authRouter);
 app.use("/user", userRouter);
 app.use("/server", systemRouter);
 app.use("/jobs", exchangeRoutes);
+app.use("/rocket", rocketRoutes);
 
 // Initialize WebSocket
 const wss = new WebSocketServer({ server });
