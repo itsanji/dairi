@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { redisClient } from "../utils/redis";
+import { updateExchangeRate } from "../jobs/exchange.job";
 
 const router = Router();
 
@@ -58,6 +59,36 @@ router.get("/exchange-rate", authMiddleware, async (_req, res) => {
 
 /**
  * @swagger
+ * /jobs/exchange-rate/update:
+ *   post:
+ *     tags: [Exchange]
+ *     summary: Manually trigger exchange rate update
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Exchange rate updated successfully
+ *       500:
+ *         description: Server error
+ */
+router.post("/exchange-rate/update", authMiddleware, async (_req, res) => {
+    try {
+        const data = await updateExchangeRate();
+        return res.json({
+            success: true,
+            data,
+        });
+    } catch (error) {
+        console.error("Error updating exchange rate:", error);
+        return res.status(500).json({
+            success: false,
+            error: `Failed to update exchange rate: ${error}`,
+        });
+    }
+});
+
+/**
+ * @swagger
  * /jobs/exchange-rate/settings:
  *   put:
  *     tags: [Exchange]
@@ -108,11 +139,15 @@ router.put("/exchange-rate/settings", authMiddleware, async (req, res) => {
             })
         );
 
+        // Update exchange rate with new settings
+        const data = await updateExchangeRate();
+
         return res.json({
             success: true,
             data: {
                 base,
                 target,
+                rate: data,
                 message: "Exchange rate settings updated successfully",
             },
         });

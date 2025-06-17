@@ -22,12 +22,7 @@ interface ExchangeRateData {
     nextUpdate: string;
 }
 
-/**
- * Job: Get latest exchange rate and save to redis
- * Schedule: Runs at minute 0 of every hour
- * Action: Fetches exchange rate from API and saves to Redis
- */
-export const exchangeRateJob = new Cron("0 * * * *", async () => {
+async function updateExchangeRate() {
     try {
         let base: string = "USD";
         let target: string = "JPY";
@@ -70,7 +65,18 @@ export const exchangeRateJob = new Cron("0 * * * *", async () => {
         await redisClient.setEx("exchange:rate", 7200, JSON.stringify(exchangeData));
 
         console.log(`Exchange rate updated: 1 ${base} = ${data.conversion_rate} ${target}`);
+        return exchangeData;
     } catch (error) {
         console.error("Error fetching exchange rate:", error);
+        throw error;
     }
-});
+}
+
+/**
+ * Job: Get latest exchange rate and save to redis
+ * Schedule: Runs at minute 0 of every hour
+ * Action: Fetches exchange rate from API and saves to Redis
+ */
+export const exchangeRateJob = new Cron("0 * * * *", updateExchangeRate);
+
+export { updateExchangeRate };

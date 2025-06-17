@@ -13,8 +13,10 @@ const api = () => ({
     server: {
         info: "/server/info"
     },
-    exchangeGroup: {
-        exchangeRate: "/jobs/exchange-rate"
+    jobs: {
+        exchangeRate: "/jobs/exchange-rate",
+        exchangeRateSettings: "/jobs/exchange-rate/settings",
+        exchangeRateUpdate: "/jobs/exchange-rate/update"
     },
     rocket: {
         schedules: "/rocket/schedules",
