@@ -36,6 +36,11 @@ const NavBar: React.FC = () => {
                 <Link to={globalContext.isLogged ? "/" : "/auth"} className="btn btn-ghost text-xl">
                     Dairi
                 </Link>
+                {globalContext.isLogged && (
+                    <Link to="/apps" className="btn btn-ghost">
+                        Apps
+                    </Link>
+                )}
             </div>
             {globalContext.isLogged ? (
                 <>

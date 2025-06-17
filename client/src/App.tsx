@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import Apps from "./pages/Apps";
 import Auth from "./pages/Auth";
 import NoMatch from "./pages/NoMatch";
+import ExchangeRate from "./pages/ExchangeRate";
 // import Test from "./pages/Test";
 import { api, constants } from "./utils/constants";
 import { toast } from "react-toastify";
@@ -122,6 +123,7 @@ function App() {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/apps" element={<Apps />} />
                     <Route path="/rocket-chat" element={<RocketChat />} />
+                    <Route path="/exchange-rate" element={<ExchangeRate />} />
                     {/*<Route path="/test" element={<Test />} /> */}
                     <Route path="/*" element={<NoMatch />} />
                 </Route>

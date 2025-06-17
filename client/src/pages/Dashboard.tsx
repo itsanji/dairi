@@ -3,6 +3,7 @@ import { api } from "../utils/constants";
 import { GlobalContext } from "../contexts/globalContext";
 import { SysInfo } from "../types/sysInfo";
 import SystemInfo from "../components/Apps/SystemInfo";
+import { toast } from "react-toastify";
 
 interface ExchangeRateData {
     base: string;
@@ -35,15 +36,18 @@ const Dashboard: React.FC = () => {
     const fetchExchangeRate = async () => {
         setLoading(true);
         try {
-            const response = await globalContext.fetch.get(api().exchangeGroup.exchangeRate);
+            const response = await globalContext.fetch.get(api().jobs.exchangeRate);
             if (response.data.success) {
                 setExchangeRate(response.data.data);
                 setLastUpdated(new Date().toLocaleTimeString());
+                toast.success("Exchange rate updated successfully");
             } else {
                 console.error("Failed to fetch exchange rate:", response.data.message);
+                toast.error(response.data.message || "Failed to fetch exchange rate");
             }
         } catch (error) {
             console.error("Error fetching exchange rate:", error);
+            toast.error("Error fetching exchange rate");
         } finally {
             setLoading(false);
         }
@@ -70,7 +74,28 @@ const Dashboard: React.FC = () => {
         {sysInfo && <SystemInfo sysInfo={sysInfo} />}
 
         <div className="mt-8">
-            <h2 className="text-lg font-medium mb-4">Exchange Rate</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium">Exchange Rate</h2>
+                <button
+                    className="btn btn-primary btn-sm"
+                    onClick={fetchExchangeRate}
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <>
+                            <span className="loading loading-spinner loading-xs"></span>
+                            Updating...
+                        </>
+                    ) : (
+                        <>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Update Now
+                        </>
+                    )}
+                </button>
+            </div>
 
             {loading && !exchangeRate && (
                 <div className="flex items-center">
